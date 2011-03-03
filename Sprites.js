@@ -38,8 +38,13 @@ include("b2Vec2.js");
         this.obj = null;
         this.world.add_shape(this);
     };
+    var proto = Rectangle.prototype;
     
-    Rectangle.prototype.draw = function(ctx) {
+    proto.remove = function() {
+        this.world.remove_shape(this);
+    };
+    
+    proto.draw = function(ctx) {
         ctx.save();
         var pos = this.pos,
             size = this.size,

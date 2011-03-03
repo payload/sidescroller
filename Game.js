@@ -75,7 +75,8 @@ include("Units.js");
     };
 
     proto.create_world = function() {
-        var world = new World();
+        var field = [0, 0, this.width, this.height];
+        var world = new World(field);
         return world;
     };
     

@@ -21,7 +21,7 @@ include("Obstacle.js");
         this.normsize = null;
         this.isUnit = true;
         this.notRecharged = 0;
-        this.rechargeTime = 1;
+        this.rechargeTime = 0.05;
     };
     var proto = DumbUnit.prototype;
     
@@ -73,9 +73,9 @@ include("Obstacle.js");
                 sx = this.size.x,
                 vx = this.vel.x,
                 vy = this.vel.y,
-                shell = new Obstacle(this.world);
+                shell = new Shell(this.world);
             shell.pos.Set(x + sx, y);
-            shell.vel.Set(vx + 50, vy);
+            shell.vel.Set(vx + 1200, vy);
         }
     };
     
@@ -92,5 +92,34 @@ include("Obstacle.js");
     };
     
     proto.draw = function(ctx) {
+    };
+})();
+
+(function() {
+    this.Shell = function(world, pos, size, vel) {
+        if (!world) throw "world:World missing";
+        this.world = world;
+        this.pos = pos || new b2Vec2(0, 0);
+        this.size = size || new b2Vec2(5, 5);
+        this.rot = [0];
+        this.vel = vel || new b2Vec2(0, 0);
+        this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
+        this.world.add_obj(this);
+    };
+    var proto = Shell.prototype;
+    
+    proto.step = function(dt) {
+        var vel = this.vel.Copy();
+        vel.Multiply(dt);
+        this.pos.Add(vel);
+        
+        if (!this.world.in_field(this.pos)) {
+            this.remove();
+        }
+    };
+    
+    proto.remove = function() {
+        this.world.remove_obj(this);
+        this.sprite.remove();
     };
 })();

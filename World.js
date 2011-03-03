@@ -1,15 +1,25 @@
 include("b2Vec2.js");
 
 (function() {
-    this.World = function() {
+    this.World = function(field) {
+        this.field = field;
         this.objs = [];
         this.shapes = [];
-        this.bodies = [];
         this.collide = {
             rect_rect: this.collision_rect_rect
         };
     };
     var proto = World.prototype;
+    
+    proto.in_field = function(vec) {
+        var field = this.field;
+        var ret =
+            vec.x > field[0] &&
+            vec.x < field[2] &&
+            vec.y > field[1] &&
+            vec.y < field[3];
+        return ret;
+    };
     
     proto.collision_rect_rect = function(a, b) {
         var posa = a.pos;
@@ -52,12 +62,18 @@ include("b2Vec2.js");
         this.objs.push(obj);
     };
     
+    proto.remove_obj = function(obj) {
+        var i = this.objs.indexOf(obj);
+        this.objs.splice(i, 1);
+    };
+    
     proto.add_shape = function(obj) {
         this.shapes.push(obj);
     };
     
-    proto.add_body = function(obj) {
-        this.bodies.push(obj);
+    proto.remove_shape = function(obj) {
+        var i = this.shapes.indexOf(obj);
+        this.shapes.splice(i, 1);
     };
     
     proto.foreach_obj = function(func) {
@@ -67,11 +83,6 @@ include("b2Vec2.js");
     
     proto.foreach_shape = function(func) {
         for (var i = 0, obj; obj = this.shapes[i]; i++)
-            func(obj);
-    };
-    
-    proto.foreach_body = function(func) {
-        for (var i = 0, obj; obj = this.bodies[i]; i++)
             func(obj);
     };
 })();
