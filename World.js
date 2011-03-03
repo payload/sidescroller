@@ -6,18 +6,18 @@ include("b2Vec2.js");
         this.shapes = [];
         this.bodies = [];
         this.collide = {
-            circle_rectangle: this.collision_circle_rectangle
+            rect_rect: this.collision_rect_rect
         };
     };
     var proto = World.prototype;
     
-    proto.collision_circle_rectangle = function(a, b) {
+    proto.collision_rect_rect = function(a, b) {
         var posa = a.pos;
         var posb = b.pos;
         var diff = posb.Copy();
         diff.Subtract(posa);
         var distance = diff.Length();
-        var min_distance = a.radius[0] + b.size.Length();
+        var min_distance = a.size.Length()*0.5 + b.size.Length()*0.5;
         if (distance < min_distance)
             return {
                 a: a,

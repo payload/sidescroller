@@ -1,6 +1,7 @@
 //include("Bullet.js");
 include("b2Vec2.js");
 include("Sprites.js");
+include("Obstacle.js");
 
 (function() {
     this.DumbUnit = function(world) {
@@ -19,6 +20,8 @@ include("Sprites.js");
         
         this.normsize = null;
         this.isUnit = true;
+        this.notRecharged = 0;
+        this.rechargeTime = 1;
     };
     var proto = DumbUnit.prototype;
     
@@ -61,12 +64,27 @@ include("Sprites.js");
         var shake = this.normsize.Copy();
         shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
         this.size.SetV(shake);
+        
+        if (!this.notRecharged) {
+            this.notRecharged = this.rechargeTime;
+            
+            var x = this.pos.x,
+                y = this.pos.y,
+                sx = this.size.x,
+                vx = this.vel.x,
+                vy = this.vel.y,
+                shell = new Obstacle(this.world);
+            shell.pos.Set(x + sx, y);
+            shell.vel.Set(vx + 50, vy);
+        }
     };
     
     proto.step = function(dt) {
         var vel = this.vel.Copy();
         vel.Multiply(dt);
         this.pos.Add(vel);
+        
+        this.notRecharged = Math.max(0, this.notRecharged - dt);
     };
     
     proto.collide = function(dt) {

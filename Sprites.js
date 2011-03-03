@@ -9,6 +9,7 @@ include("b2Vec2.js");
         this.pos = pos;
         this.radius = radius;
         this.type = "circle";
+        this.obj = null;
         this.world.add_shape(this);
     };
     
@@ -33,7 +34,8 @@ include("b2Vec2.js");
         this.pos = pos;
         this.size = size;
         this.rot = rot || [0];
-        this.type = "rectangle";
+        this.type = "rect";
+        this.obj = null;
         this.world.add_shape(this);
     };
     

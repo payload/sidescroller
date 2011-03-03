@@ -37,12 +37,13 @@ include("Units.js");
         var world = this.world,
             width = this.width,
             height = this.height;
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 20; i++) {
             var obj = new DumbUnit(world);
             
-            var x = width * Math.random(),
+            var x = width + 5 * width * Math.random(),
                 y = height * Math.random();
             obj.pos.Set(x, y);
+            obj.vel.Set(-100, 0);
         }
     };
 
@@ -79,7 +80,16 @@ include("Units.js");
     };
     
     proto.collision_handler = function(coll) {
-        
+        if ("obj" in coll.a) {
+            var obj = coll.a.obj;
+            if (obj && "collide" in obj)
+                obj.collide(coll.b, coll);
+        }
+        if ("obj" in coll.b) {
+            var obj = coll.b.obj;
+            if (obj && "collide" in obj)
+                obj.collide(coll.a, coll);
+        }
     };
     
     proto.step = function(dt) {
