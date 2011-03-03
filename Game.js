@@ -44,6 +44,7 @@ include("Units.js");
                 y = height * Math.random();
             obj.pos.Set(x, y);
             obj.vel.Set(-100, 0);
+            obj.vel_want.SetV(obj.vel);
         }
     };
 
@@ -53,19 +54,28 @@ include("Units.js");
             height = this.height;
 
         var player = new DumbUnit(world);
+        player.keep_in_field = true;
         
         var x = width * Math.random(),
             y = height * Math.random();
         player.pos.Set(x, y);
         
-        bindings[87] = [null, null,
-            function(dt){player.move_up(dt)}]; // W
-        bindings[65] = [null, null,
-            function(dt){player.move_left(dt)}]; // A
-        bindings[83] = [null, null,
-            function(dt){player.move_down(dt)}]; // S
-        bindings[68] = [null, null,
-            function(dt){player.move_right(dt)}]; // D
+        bindings[87] = [
+            function(dt){player.move_up_on(dt)},
+            function(dt){player.move_up_off(dt)},
+            null]; // W
+        bindings[65] = [
+            function(dt){player.move_left_on(dt)}, 
+            function(dt){player.move_left_off(dt)},
+            null]; // A
+        bindings[83] = [
+            function(dt){player.move_down_on(dt)}, 
+            function(dt){player.move_down_off(dt)},
+            null]; // S
+        bindings[68] = [
+            function(dt){player.move_right_on(dt)}, 
+            function(dt){player.move_right_off(dt)},
+            null]; // D
         bindings[16] = [
             function(){player.shoot_on()},
             function(){player.shoot_off()},

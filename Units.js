@@ -11,9 +11,13 @@ include("Obstacle.js");
         this.size = new b2Vec2(20, 20);
         this.rot = [0];
         this.vel = new b2Vec2(0, 0);
-        var speed = 400;
-        this.move_vert = new b2Vec2(0, speed);
-        this.move_hori = new b2Vec2(speed, 0);
+        this.accel = 2;
+        this.vel_want = new b2Vec2(0, 0);
+        var vel_max = 400;
+        this.vel_up     = new b2Vec2(0, -vel_max);
+        this.vel_down   = new b2Vec2(0,  vel_max);
+        this.vel_left   = new b2Vec2(-vel_max, 0);
+        this.vel_right  = new b2Vec2( vel_max, 0);
         this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
         this.sprite.obj = this;
         this.world.add_obj(this);
@@ -22,31 +26,40 @@ include("Obstacle.js");
         this.isUnit = true;
         this.notRecharged = 0;
         this.rechargeTime = 0.05;
+        this.keep_in_field = false;
     };
     var proto = DumbUnit.prototype;
     
-    proto.move_up = function(dt) {
-        var vel = this.move_vert.Copy();
-        vel.Multiply(dt);
-        this.pos.Subtract(vel);
+    proto.move_up_on = function(dt) {
+        this.vel_want.Add(this.vel_up);
     };
     
-    proto.move_down = function(dt) {
-        var vel = this.move_vert.Copy();
-        vel.Multiply(dt);
-        this.pos.Add(vel);
+    proto.move_up_off = function(dt) {
+        this.vel_want.Subtract(this.vel_up);
     };
     
-    proto.move_left = function(dt) {
-        var vel = this.move_hori.Copy();
-        vel.Multiply(dt);
-        this.pos.Subtract(vel);
+    proto.move_down_on = function(dt) {
+        this.vel_want.Add(this.vel_down);
     };
     
-    proto.move_right = function(dt) {
-        var vel = this.move_hori.Copy();
-        vel.Multiply(dt);
-        this.pos.Add(vel);
+    proto.move_down_off = function(dt) {
+        this.vel_want.Subtract(this.vel_down);
+    };
+    
+    proto.move_left_on = function(dt) {
+        this.vel_want.Add(this.vel_left);
+    };
+    
+    proto.move_left_off = function(dt) {
+        this.vel_want.Subtract(this.vel_left);
+    };
+    
+    proto.move_right_on = function(dt) {
+        this.vel_want.Add(this.vel_right);
+    };
+    
+    proto.move_right_off = function(dt) {
+        this.vel_want.Subtract(this.vel_right);
     };
     
     proto.shoot_on = function() {
@@ -79,19 +92,60 @@ include("Obstacle.js");
         }
     };
     
-    proto.step = function(dt) {
+    proto.step = function(dt) {    
+        var diff = this.vel_want.Copy();
+        diff.Subtract(this.vel);
+        diff.Multiply(Math.min(1, this.accel * dt));
+        this.vel.Add(diff);
+    
         var vel = this.vel.Copy();
         vel.Multiply(dt);
         this.pos.Add(vel);
         
+        if (this.keep_in_field)
+            this.set_pos_to_field();
+        
         this.notRecharged = Math.max(0, this.notRecharged - dt);
     };
+    
+    proto.set_pos_to_field = function() {
+        var field = this.world.field,
+            tl = new b2Vec2(field[0], field[1]),
+            br = new b2Vec2(field[2], field[3]),
+            pos = this.pos,
+            vel = this.vel,
+            s = this.size.Length(),
+            svec = new b2Vec2(s*0.5, s*0.5);
+        tl.Add(svec);
+        br.Subtract(svec);
+        if (pos.x < tl.x) {
+            pos.x = tl.x;
+            vel.Set(0, vel.y);
+        }
+        if (pos.x > br.x) {
+            pos.x = br.x;
+            vel.Set(0, vel.y);
+        }
+        if (pos.y < tl.y) {
+            pos.y = tl.y;
+            vel.Set(vel.x, 0);
+        }
+        if (pos.y > br.y) {
+            pos.y = br.y;
+            vel.Set(vel.x, 0);
+        }
+    }
     
     proto.collide = function(dt) {
         this.rot[0] += (Math.random() - Math.random());
     };
     
     proto.draw = function(ctx) {
+    };
+    
+    proto.remove = function() {
+        this.world.remove_obj(this);
+        this.sprite.remove();
     };
 })();
 
@@ -104,6 +158,7 @@ include("Obstacle.js");
         this.rot = [0];
         this.vel = vel || new b2Vec2(0, 0);
         this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
+        this.sprite.obj = this;
         this.world.add_obj(this);
     };
     var proto = Shell.prototype;
@@ -116,6 +171,13 @@ include("Obstacle.js");
         if (!this.world.in_field(this.pos)) {
             this.remove();
         }
+    };
+    
+    proto.collide = function(other, coll) {
+        var obj = other.obj;
+        if (obj && "energy" in obj)
+            ;
+        this.remove();
     };
     
     proto.remove = function() {
