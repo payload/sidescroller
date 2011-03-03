@@ -29,25 +29,23 @@ include("b2Vec2.js");
         return null;
     };
     
-    proto.collision_handler = function(coll) {
-        if (!coll.a.obj || !coll.b.obj) return;
-    };
-    
-    proto.step = function(dt) {
-        var that = this;
-        var collisions = [];
-        this.foreach_shape( function(a) {
-        that.foreach_shape( function(b) {
-            if (a === b) return;
-            var collision_type = a.type +"_"+ b.type;
-            var collide = that.collide[collision_type];
-            if (!collide) return;
-            var collision = collide(a,b);
-            if (collision) collisions.push(collision);
-        })});
-        for (var i = 0, collision; collision = collisions[i]; i++) {
-            this.collision_handler(collision);
+    proto.get_collisions = function() {
+        var shapes = this.shapes,
+            collide = this.collide,
+            collisions = [];
+        for (var i = 0, a; a = shapes[i]; i++) {
+            for (var j = i+1, b; b = shapes[j]; j++) {
+                if (a.type < b.type) {
+                    var c = b; b = a; a = c;
+                }
+                var collision_type = a.type +"_"+ b.type;
+                var collide_f = collide[collision_type];
+                if (!collide_f) continue;
+                var collision = collide_f(a,b);
+                if (collision) collisions.push(collision);
+            }
         }
+        return collisions;
     };
     
     proto.add_obj = function(obj) {

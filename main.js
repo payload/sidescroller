@@ -26,17 +26,20 @@ window.onload = function(prog) {
         window.onkeyup({which: 16});
     };
     
+    var interval = 10;
+    var dt = interval/1000;
+    
     setInterval(function() {
-        loop(game, ctx, canvas);
-    }, 10);
+        loop(game, ctx, canvas, dt);
+    }, interval);
 };
 
-var loop = function(game, ctx, canvas) {
-    game.step();
+var loop = function(game, ctx, canvas, dt) {
+    game.step(dt);
 
     for (var i in active_bindings) {
         var during = active_bindings[i][0];
-        if (during) during();
+        if (during) during(dt);
         active_bindings[i][1] = true;
     }
 

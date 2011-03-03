@@ -32,22 +32,25 @@ include("b2Vec2.js");
         this.world = world;
         this.pos = pos;
         this.size = size;
-        this.rot = rot || 0;
+        this.rot = rot || [0];
         this.type = "rectangle";
         this.world.add_shape(this);
     };
     
     Rectangle.prototype.draw = function(ctx) {
         ctx.save();
-        var pos = this.pos;
-        var size = this.size;
+        var pos = this.pos,
+            size = this.size,
+            hsize = size.Copy();
+        hsize.Multiply(0.5);
+        var sx = hsize.x, sy = hsize.y;
         ctx.translate(pos.x, pos.y);
         ctx.rotate(this.rot[0]);
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(size.x, 0);
-        ctx.lineTo(size.x, size.y);
-        ctx.lineTo(0, size.y);
+        ctx.moveTo(-sx, -sy);
+        ctx.lineTo( sx, -sy);
+        ctx.lineTo( sx,  sy);
+        ctx.lineTo(-sx,  sy);
         ctx.closePath();
         ctx.stroke();
         ctx.restore();
