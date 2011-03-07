@@ -40,7 +40,7 @@ include("Units.js");
         for (var i = 0; i < 20; i++) {
             var obj = new DumbUnit(world);
             
-            var x = width + 5 * width * Math.random(),
+            var x = width + width * 5 * Math.random(),
                 y = height * Math.random();
             obj.pos.Set(x, y);
             obj.vel.Set(-100, 0);
@@ -128,3 +128,41 @@ include("Units.js");
     };
 })();
 
+(function(){
+    this.Timer = function(){
+        this.interval = 1;
+        this.running = false;
+        this.accum = 0;
+        this.callback = null;
+    }
+    var proto = Timer.prototype;
+    
+    proto.start = function() {
+        this.running = true;
+    };
+    
+    proto.stop = function() {
+        this.running = false;
+        this.accum = 0;
+    };
+    
+    proto.pause = function() {
+        this.running = false;
+    };
+    
+    proto.restart = function() {
+        this.running = true;
+        this.accum = 0;
+    };
+    
+    proto.step = function(dt) {
+        if (!this.running) return;
+        this.accum += dt;
+        if (this.accum >= this.interval) {
+            while (this.accum >= this.interval)
+                this.accum = this.interval - this.accum;
+            if (this.callback)
+                this.callback();
+        }
+    };
+})();

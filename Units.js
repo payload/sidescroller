@@ -27,6 +27,7 @@ include("Obstacle.js");
         this.notRecharged = 0;
         this.rechargeTime = 0.05;
         this.keep_in_field = false;
+        this.remove_when_out_of_sight = false;
     };
     var proto = DumbUnit.prototype;
     
@@ -102,10 +103,30 @@ include("Obstacle.js");
         vel.Multiply(dt);
         this.pos.Add(vel);
         
+        if (this.remove_when_out_of_sight)
+            if (this.out_of_sight())
+                this.remove();
         if (this.keep_in_field)
             this.set_pos_to_field();
         
         this.notRecharged = Math.max(0, this.notRecharged - dt);
+    };
+    
+    proto.out_of_sight = function() {
+        var field = this.world.field,
+            tl = new b2Vec2(field[0], field[1]),
+            br = new b2Vec2(field[2], field[3]),
+            pos = this.pos,
+            s = this.size.Length(),
+            svec = new b2Vec2(s, s);
+        tl.Subtract(svec);
+        br.Add(svec);
+        var out =
+            pos.x < tl.x ||
+            pos.x > br.x ||
+            pos.y < tl.y ||
+            pos.y > br.y;
+        return out;
     };
     
     proto.set_pos_to_field = function() {
@@ -146,6 +167,7 @@ include("Obstacle.js");
     proto.remove = function() {
         this.world.remove_obj(this);
         this.sprite.remove();
+        console.log(this.world.objs.length);
     };
 })();
 

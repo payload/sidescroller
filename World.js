@@ -5,6 +5,7 @@ include("b2Vec2.js");
         this.field = field;
         this.objs = [];
         this.shapes = [];
+        this.timers = []
         this.collide = {
             rect_rect: this.collision_rect_rect
         };
@@ -76,6 +77,15 @@ include("b2Vec2.js");
         this.shapes.splice(i, 1);
     };
     
+    proto.add_timer = function(obj) {
+        this.timers.push(obj);
+    };
+    
+    proto.remove_timers = function(obj) {
+        var i = this.timers.indexOf(obj);
+        this.timers.splice(i, 1);
+    };
+    
     proto.foreach_obj = function(func) {
         for (var i = 0, obj; obj = this.objs[i]; i++)
             func(obj);
@@ -83,6 +93,11 @@ include("b2Vec2.js");
     
     proto.foreach_shape = function(func) {
         for (var i = 0, obj; obj = this.shapes[i]; i++)
+            func(obj);
+    };
+    
+    proto.foreach_timer = function(func) {
+        for (var i = 0, obj; obj = this.timers[i]; i++)
             func(obj);
     };
 })();

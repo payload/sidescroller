@@ -58,7 +58,7 @@ var active_bindings = {};
 
 window.onkeydown = function(key) {
     var k = key.which;
-    console.log("keydown", k);
+    //console.log("keydown", k);
     if (k in bindings && !(k in active_bindings)) {
         var down = bindings[k][0];
         if (down) down();
