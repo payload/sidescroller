@@ -5,7 +5,7 @@ include("b2Vec2.js");
         this.field = field;
         this.objs = [];
         this.shapes = [];
-        this.timers = []
+        this.timers = [];
         this.collide = {
             rect_rect: this.collision_rect_rect
         };

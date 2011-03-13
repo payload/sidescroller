@@ -2,29 +2,26 @@ include("World.js");
 include("Obstacle.js");
 include("Units.js");
 
-(function() {
++function() {
     
     this.Game = function(canvas, bindings) {
-        return new O(canvas, bindings);
-    };
-
-    var O = function(canvas, bindings) {
         this.canvas = canvas;
         this.bindings = bindings;
         this.width = canvas.width;
         this.height = canvas.height;
         this.world = this.create_world();
-        this.create_some_obstacles();
-        this.create_some_units();
+        this.create_some_obstacles(5);
         this.create_player();
+        this.create_spawner();
     };
-    var proto = O.prototype;
 
-    proto.create_some_obstacles = function() {
+    var proto = Game.prototype;
+
+    proto.create_some_obstacles = function(count) {
         var world = this.world,
             width = this.width,
             height = this.height;
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < count; i++) {
             var obj = new Obstacle(world);
             
             var x = width * Math.random(),
@@ -33,16 +30,22 @@ include("Units.js");
         }
     };
     
-    proto.create_some_units = function() {
+    proto.create_spawner = function() {
+        var that = this;
+        var t = new Timer(this.world, 3, function() {
+            that.create_some_enemies(1 + 2 * Math.random());
+        });
+    };
+    
+    proto.create_some_enemies = function(count) {
         var world = this.world,
             width = this.width,
             height = this.height;
-        for (var i = 0; i < 20; i++) {
-            var obj = new DumbUnit(world);
-            
-            var x = width + width * 5 * Math.random(),
+        for (var i = 0; i < count; i++) {
+            var obj = new DumbUnit(world),
+                x = width + 10,
                 y = height * Math.random();
-            obj.pos.Set(x, y);
+            obj.pos.Set(x + obj.size.x, y);
             obj.vel.Set(-100, 0);
             obj.vel_want.SetV(obj.vel);
         }
@@ -60,26 +63,31 @@ include("Units.js");
             y = height * Math.random();
         player.pos.Set(x, y);
         
+        // W
         bindings[87] = [
             function(dt){player.move_up_on(dt)},
             function(dt){player.move_up_off(dt)},
-            null]; // W
+            null];
+        // A
         bindings[65] = [
             function(dt){player.move_left_on(dt)}, 
             function(dt){player.move_left_off(dt)},
-            null]; // A
+            null];
+        // S
         bindings[83] = [
             function(dt){player.move_down_on(dt)}, 
             function(dt){player.move_down_off(dt)},
-            null]; // S
+            null];
+        // D
         bindings[68] = [
             function(dt){player.move_right_on(dt)}, 
             function(dt){player.move_right_off(dt)},
-            null]; // D
+            null];
+        // Shift
         bindings[16] = [
             function(){player.shoot_on()},
             function(){player.shoot_off()},
-            function(dt){player.shoot(dt)}]; // Shift
+            function(dt){player.shoot(dt)}];
         
         return player;
     };
@@ -90,25 +98,28 @@ include("Units.js");
         return world;
     };
     
-    proto.collision_handler = function(coll) {
+    proto.collision_handler = function(dt, coll) {
         if ("obj" in coll.a) {
             var obj = coll.a.obj;
             if (obj && "collide" in obj)
-                obj.collide(coll.b, coll);
+                obj.collide(dt, coll.b, coll);
         }
         if ("obj" in coll.b) {
             var obj = coll.b.obj;
             if (obj && "collide" in obj)
-                obj.collide(coll.a, coll);
+                obj.collide(dt, coll.a, coll);
         }
     };
     
     proto.step = function(dt) {
-        var chandler = this.collision_handler;
-        var collisions = this.world.get_collisions();
+        var chandler = this.collision_handler,
+            collisions = this.world.get_collisions();
         for (var i = 0, collision; collision = collisions[i]; i++) {
-            chandler(collision);
+            chandler(dt, collision);
         }
+        this.world.foreach_timer( function(obj) {
+            if ("step" in obj) obj.step(dt);
+        });
         this.world.foreach_obj( function(obj) {
             if ("step" in obj) obj.step(dt);
         });
@@ -126,15 +137,16 @@ include("Units.js");
         
         ctx.restore();
     };
-})();
+}();
 
-(function(){
-    this.Timer = function(){
-        this.interval = 1;
-        this.running = false;
++function(){
+    this.Timer = function(world, interval, callback){
+        this.interval = interval === undefined ? 1 : interval;
+        this.running = true;
         this.accum = 0;
-        this.callback = null;
-    }
+        this.callback = callback || null;
+        world.add_timer(this);
+    };   
     var proto = Timer.prototype;
     
     proto.start = function() {
@@ -165,4 +177,4 @@ include("Units.js");
                 this.callback();
         }
     };
-})();
+}();

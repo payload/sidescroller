@@ -3,6 +3,30 @@ include("b2Vec2.js");
 include("Sprites.js");
 include("Obstacle.js");
 
++function() {
+    this.DamageModel = function(energy, factor, to_apply, die) {
+        this.energy = energy || 0;
+        this.factor = factor || 1;
+        this.to_apply = to_apply || 0;
+        this.die = die || function(){};
+    };
+    var proto = DamageModel.prototype;
+    
+    proto.apply_damage = function(dt, dmg, to_apply) {
+        dmg.energy -= to_apply * dmg.factor * dt;
+        if (dmg.energy < 0)
+            dmg.die(this);
+    };
+    
+    proto.collide = function(dt, dmg, coll) {
+        this.apply_damage(dt, dmg, this.to_apply);
+    };
+    
+    proto.explode = function(other, damage) {
+        this.apply_damage(1, other, damage);
+    };
+}();
+
 (function() {
     this.DumbUnit = function(world) {
         if (!world) throw "world:World missing";
@@ -27,9 +51,30 @@ include("Obstacle.js");
         this.notRecharged = 0;
         this.rechargeTime = 0.05;
         this.keep_in_field = false;
-        this.remove_when_out_of_sight = false;
+        this.remove_when_out_of_sight = true;
+        
+        this.damage = this.create_damage_model();
     };
     var proto = DumbUnit.prototype;
+    
+    proto.create_damage_model = function() {
+        var dmg = new DamageModel(),
+            that = this;
+        dmg.energy = 10;
+        dmg.to_apply = 20;
+        dmg.factor = 1;
+        dmg.die = function() {
+            that.remove();
+        };
+        return dmg;
+    };
+    
+    proto.collide = function(dt, other, coll) {
+        var obj = other.obj;
+        if (obj && 'damage' in obj)
+            this.damage.collide(dt, obj.damage, coll);
+        this.rot[0] += (Math.random() - Math.random());
+    };
     
     proto.move_up_on = function(dt) {
         this.vel_want.Add(this.vel_up);
@@ -119,6 +164,7 @@ include("Obstacle.js");
             pos = this.pos,
             s = this.size.Length(),
             svec = new b2Vec2(s, s);
+        br.x *= 2;
         tl.Subtract(svec);
         br.Add(svec);
         var out =
@@ -157,17 +203,12 @@ include("Obstacle.js");
         }
     }
     
-    proto.collide = function(dt) {
-        this.rot[0] += (Math.random() - Math.random());
-    };
-    
     proto.draw = function(ctx) {
     };
     
     proto.remove = function() {
         this.world.remove_obj(this);
         this.sprite.remove();
-        console.log(this.world.objs.length);
     };
 })();
 
@@ -182,8 +223,26 @@ include("Obstacle.js");
         this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
         this.sprite.obj = this;
         this.world.add_obj(this);
+        
+        this.damage = this.create_damage_model();
     };
     var proto = Shell.prototype;
+    
+    proto.create_damage_model = function() {
+        var dmg = new DamageModel(),
+            that = this;
+        dmg.die = function(other) {
+            that.remove();
+            this.explode(other, 1);
+        };
+        return dmg;
+    };
+    
+    proto.collide = function(dt, other, coll) {
+        var obj = other.obj;
+        if (obj && 'damage' in obj)
+            this.damage.collide(dt, obj.damage, coll);
+    };
     
     proto.step = function(dt) {
         var vel = this.vel.Copy();
@@ -193,13 +252,6 @@ include("Obstacle.js");
         if (!this.world.in_field(this.pos)) {
             this.remove();
         }
-    };
-    
-    proto.collide = function(other, coll) {
-        var obj = other.obj;
-        if (obj && "energy" in obj)
-            ;
-        this.remove();
     };
     
     proto.remove = function() {
