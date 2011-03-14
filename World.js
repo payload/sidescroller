@@ -1,6 +1,6 @@
 include("b2Vec2.js");
 
-(function() {
++function() {
     this.World = function(field) {
         this.field = field;
         this.objs = [];
@@ -100,4 +100,4 @@ include("b2Vec2.js");
         for (var i = 0, obj; obj = this.timers[i]; i++)
             func(obj);
     };
-})();
+}();

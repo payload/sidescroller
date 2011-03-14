@@ -1,7 +1,7 @@
 include("b2Vec2.js");
 
-(function() {
-    this.Obstacle = function(world, pos, size, rot) {
++function() {
+    this.Obstacle = function(world) {
         if (!world) throw "world:World missing";
         this.world = world;
         
@@ -39,4 +39,4 @@ include("b2Vec2.js");
         if (obj && 'damage' in obj) 
             this.damage.collide(dt, obj.damage, coll);
     };
-})();
+}();

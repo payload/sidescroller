@@ -27,7 +27,7 @@ include("b2Vec2.js");
 }();
 */
 
-(function() {
++function() {
     // :World, :MovementModel
     this.Rectangle = function(world, m) {
         this.world = world;
@@ -62,4 +62,4 @@ include("b2Vec2.js");
         ctx.stroke();
         ctx.restore();
     };
-})();
+}();

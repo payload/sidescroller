@@ -62,7 +62,7 @@ include("Obstacle.js");
     };
 }();
 
-(function() {
++function() {
     this.DumbUnit = function(world) {
         if (!world) throw "world:World missing";
         this.world = world;
@@ -254,9 +254,9 @@ include("Obstacle.js");
         this.world.remove_obj(this);
         this.sprite.remove();
     };
-})();
+}();
 
-(function() {
++function() {
     this.Shell = function(world) {
         if (!world) throw "world:World missing";
         this.world = world;
@@ -301,4 +301,4 @@ include("Obstacle.js");
         this.world.remove_obj(this);
         this.sprite.remove();
     };
-})();
+}();
