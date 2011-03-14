@@ -26,7 +26,7 @@ include("Units.js");
             
             var x = width * Math.random(),
                 y = height * Math.random();
-            obj.pos.Set(x, y);
+            obj.movement.pos.Set(x, y);
         }
     };
     

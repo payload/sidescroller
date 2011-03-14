@@ -1,6 +1,7 @@
 include("b2Vec2.js");
 
-(function() {
+/*
++function() {
     this.Circle = function(world, pos, radius) {
         if (!world) throw "world:World missing";
         if (pos === null) throw "pos:b2Vec2 missing";
@@ -23,17 +24,16 @@ include("b2Vec2.js");
         ctx.stroke();
         ctx.restore();
     };
-})();
+}();
+*/
 
 (function() {
-    this.Rectangle = function(world, pos, size, rot) {
-        if (!world) throw "world:World missing";
-        if (!pos) throw "pos:b2Vec2() missing";
-        if (!size) throw "size:b2Vec2() missing";
+    // :World, :MovementModel
+    this.Rectangle = function(world, m) {
         this.world = world;
-        this.pos = pos;
-        this.size = size;
-        this.rot = rot || [0];
+        this.pos = m.pos;
+        this.size = m.size;
+        this.rot = m.rot || [0];
         this.type = "rect";
         this.obj = null;
         this.world.add_shape(this);

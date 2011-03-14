@@ -5,12 +5,14 @@ include("b2Vec2.js");
         if (!world) throw "world:World missing";
         this.world = world;
         
-        this.pos = pos || new b2Vec2(0, 0);
-        this.size = size || new b2Vec2(10, 10);
-        this.rot = rot || [0];        
-        this.vel = new b2Vec2(0, 0);
+        var m = new MovementModel();
+        this.movement = m;
+        this.size = m.size;
+        this.rot = m.rot; 
+        this.vel = m.vel;
+        m.size.Set(10, 10);
         
-        this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
+        this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
         
         this.damage = this.create_damage_model();
@@ -20,11 +22,9 @@ include("b2Vec2.js");
     var proto = Obstacle.prototype;
     
     proto.step = function(dt) {
-        var vel = this.vel.Copy();
-        vel.Multiply(dt);
-        this.pos.Add(vel);
+        this.movement.step(dt);
         
-        if (!this.world.in_field(this.pos)) {
+        if (!this.world.in_field(this.movement.pos)) {
             this.remove();
         }
     };

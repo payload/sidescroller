@@ -67,12 +67,13 @@ include("Obstacle.js");
         if (!world) throw "world:World missing";
         this.world = world;
         
-        var m = this.create_movement_model();
+        var m = new MovementModel();
         this.movement = m;
-        this.pos = m.pos;
         this.size = m.size;
         this.vel = m.vel;
         this.rot = m.rot;
+        this.size.Set(20, 20);
+        
         this.move_up = false;
         this.move_down = false;
         this.move_left = false;
@@ -85,10 +86,7 @@ include("Obstacle.js");
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
         
-        this.sprite = new Rectangle(world,
-            this.movement.pos,
-            this.movement.size,
-            this.movement.rot);
+        this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
         
         this.damage = this.create_damage_model();
@@ -96,12 +94,6 @@ include("Obstacle.js");
         this.world.add_obj(this);
     };
     var proto = DumbUnit.prototype;
-    
-    proto.create_movement_model = function() {
-        var move = new MovementModel();
-        move.size.Set(20, 20);
-        return move;
-    };
     
     proto.create_damage_model = function() {
         var dmg = new DamageModel(),
@@ -173,14 +165,17 @@ include("Obstacle.js");
         if (!this.notRecharged) {
             this.notRecharged = this.rechargeTime;
             
-            var x = this.pos.x,
-                y = this.pos.y,
+            var m = this.movement,
+                x = m.pos.x,
+                y = m.pos.y,
                 sx = this.size.x,
                 vx = this.vel.x,
                 vy = this.vel.y,
                 shell = new Shell(this.world);
-            shell.pos.Set(x + sx, y);
+            shell.movement.pos.Set(x + sx, y);
             shell.vel.Set(vx + 1200, vy);
+            shell.movement.vel_want.SetV(shell.vel);
+            shell.movement.vel_max[0] = shell.vel.Length();
         }
     };
     
@@ -212,7 +207,8 @@ include("Obstacle.js");
         var field = this.world.field,
             tl = new b2Vec2(field[0], field[1]),
             br = new b2Vec2(field[2], field[3]),
-            pos = this.pos,
+            m = this.movement,
+            pos = m.pos,
             s = this.size.Length(),
             svec = new b2Vec2(s, s);
         br.x *= 2;
@@ -230,7 +226,8 @@ include("Obstacle.js");
         var field = this.world.field,
             tl = new b2Vec2(field[0], field[1]),
             br = new b2Vec2(field[2], field[3]),
-            pos = this.pos,
+            m = this.movement,
+            pos = m.pos,
             vel = this.vel,
             s = this.size.Length(),
             svec = new b2Vec2(s*0.5, s*0.5);
@@ -264,16 +261,18 @@ include("Obstacle.js");
 })();
 
 (function() {
-    this.Shell = function(world, pos, size, vel) {
+    this.Shell = function(world) {
         if (!world) throw "world:World missing";
         this.world = world;
         
-        this.pos = pos || new b2Vec2(0, 0);
-        this.size = size || new b2Vec2(5, 5);
-        this.rot = [0];
-        this.vel = vel || new b2Vec2(0, 0);
+        var m = new MovementModel();
+        this.movement = m;
+        this.size = m.size;
+        this.rot = m.rot;
+        this.vel = m.vel;
+        m.size.Set(5, 5);
         
-        this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
+        this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
         
         this.damage = this.create_damage_model();
@@ -299,11 +298,9 @@ include("Obstacle.js");
     };
     
     proto.step = function(dt) {
-        var vel = this.vel.Copy();
-        vel.Multiply(dt);
-        this.pos.Add(vel);
+        this.movement.step(dt);
         
-        if (!this.world.in_field(this.pos)) {
+        if (!this.world.in_field(this.movement.pos)) {
             this.remove();
         }
     };
