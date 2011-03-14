@@ -43,11 +43,12 @@ include("Units.js");
             height = this.height;
         for (var i = 0; i < count; i++) {
             var obj = new DumbUnit(world),
+                m = obj.movement,
                 x = width + 10,
                 y = height * Math.random();
-            obj.pos.Set(x + obj.size.x, y);
-            obj.vel.Set(-100, 0);
-            obj.vel_want.SetV(obj.vel);
+            m.pos.Set(x + m.size.x, y);
+            m.vel.Set(-100, 0);
+            m.vel_want.SetV(m.vel);
         }
     };
 
@@ -61,7 +62,7 @@ include("Units.js");
         
         var x = width * Math.random(),
             y = height * Math.random();
-        player.pos.Set(x, y);
+        player.movement.pos.Set(x, y);
         
         // W
         bindings[87] = [

@@ -29,22 +29,29 @@
 
 	proto.Negative = function(){ return new b2Vec2(-this.x, -this.y); };
 
-	proto.Copy = function(){
+	proto.Copy = function() {
 		return new b2Vec2(this.x,this.y);
 	};
 
-	proto.Add = function(v)
-	{
+	proto.Add = function(v) {
 		this.x += v.x; this.y += v.y;
 	};
+	
+	proto.AddC = function(x, y) {
+	    this.x += x;
+	    this.y += y;
+	};
+	
+	proto.AddPolar = function(dir, len) {
+        this.x += Math.cos(dir) * len;
+        this.y += Math.sin(dir) * len;
+    };
 
-	proto.Subtract = function(v)
-	{
+	proto.Subtract = function(v) {
 		this.x -= v.x; this.y -= v.y;
 	};
 
-	proto.Multiply = function(a)
-	{
+	proto.Multiply = function(a) {
 		this.x *= a; this.y *= a;
 	};
 
@@ -94,10 +101,13 @@
 		this.y = Math.abs(this.y);
 	};
 
-	proto.Length = function()
-	{
+	proto.Length = function() {
 		return Math.sqrt(this.x * this.x + this.y * this.y);
 	};
+	
+	proto.Length2 = function() {
+	    return this.x*this.x + this.y*this.y;
+    };
 
 	proto.Normalize = function()
 	{

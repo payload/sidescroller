@@ -4,11 +4,11 @@ include("Sprites.js");
 include("Obstacle.js");
 
 +function() {
-    this.DamageModel = function(energy, factor, to_apply, die) {
-        this.energy = energy || 0;
-        this.factor = factor || 1;
-        this.to_apply = to_apply || 0;
-        this.die = die || function(){};
+    this.DamageModel = function(){
+        this.energy = 0;
+        this.factor = 1;
+        this.to_apply = 0;
+        this.die = function(){};
     };
     var proto = DamageModel.prototype;
     
@@ -27,24 +27,56 @@ include("Obstacle.js");
     };
 }();
 
++function() {
+    this.MovementModel = function(){
+        this.pos = new b2Vec2(0, 0);
+        this.size = new b2Vec2(10, 10);
+        this.rot = [0];
+        
+        this.vel = new b2Vec2(0, 0);
+        this.vel_want = new b2Vec2(0, 0);
+        this.vel_max = [400];
+        this.accel = [2];
+    };
+    var proto = MovementModel.prototype;
+    
+    proto.step = function(dt, veladd) {
+        var vel = this.vel,
+            vel_want = this.vel_want,
+            vel_max = this.vel_max[0],
+            accel = this.accel[0],
+            diff = vel_want.Copy();
+        if (veladd !== undefined)
+            diff.Add(veladd);
+        diff.Subtract(vel);
+        diff.Multiply(Math.min(1, accel * dt));
+        vel.Add(diff);
+        if (vel.Length() > vel_max) {
+            vel.Normalize();
+            vel.Multiply(vel_max);
+        }
+    
+        var veldt = this.vel.Copy();
+        veldt.Multiply(dt);
+        this.pos.Add(veldt);
+    };
+}();
+
 (function() {
     this.DumbUnit = function(world) {
         if (!world) throw "world:World missing";
         this.world = world;
-        this.pos = new b2Vec2(0, 0);
-        this.size = new b2Vec2(20, 20);
-        this.rot = [0];
-        this.vel = new b2Vec2(0, 0);
-        this.accel = 2;
-        this.vel_want = new b2Vec2(0, 0);
-        var vel_max = 400;
-        this.vel_up     = new b2Vec2(0, -vel_max);
-        this.vel_down   = new b2Vec2(0,  vel_max);
-        this.vel_left   = new b2Vec2(-vel_max, 0);
-        this.vel_right  = new b2Vec2( vel_max, 0);
-        this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
-        this.sprite.obj = this;
-        this.world.add_obj(this);
+        
+        var m = this.create_movement_model();
+        this.movement = m;
+        this.pos = m.pos;
+        this.size = m.size;
+        this.vel = m.vel;
+        this.rot = m.rot;
+        this.move_up = false;
+        this.move_down = false;
+        this.move_left = false;
+        this.move_right = false;
         
         this.normsize = null;
         this.isUnit = true;
@@ -53,9 +85,23 @@ include("Obstacle.js");
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
         
+        this.sprite = new Rectangle(world,
+            this.movement.pos,
+            this.movement.size,
+            this.movement.rot);
+        this.sprite.obj = this;
+        
         this.damage = this.create_damage_model();
+        
+        this.world.add_obj(this);
     };
     var proto = DumbUnit.prototype;
+    
+    proto.create_movement_model = function() {
+        var move = new MovementModel();
+        move.size.Set(20, 20);
+        return move;
+    };
     
     proto.create_damage_model = function() {
         var dmg = new DamageModel(),
@@ -77,35 +123,35 @@ include("Obstacle.js");
     };
     
     proto.move_up_on = function(dt) {
-        this.vel_want.Add(this.vel_up);
+        this.move_up = true;
     };
     
     proto.move_up_off = function(dt) {
-        this.vel_want.Subtract(this.vel_up);
+        this.move_up = false;
     };
     
     proto.move_down_on = function(dt) {
-        this.vel_want.Add(this.vel_down);
+        this.move_down = true;
     };
     
     proto.move_down_off = function(dt) {
-        this.vel_want.Subtract(this.vel_down);
+        this.move_down = false;
     };
     
     proto.move_left_on = function(dt) {
-        this.vel_want.Add(this.vel_left);
+        this.move_left = true;
     };
     
     proto.move_left_off = function(dt) {
-        this.vel_want.Subtract(this.vel_left);
+        this.move_left = false;
     };
     
     proto.move_right_on = function(dt) {
-        this.vel_want.Add(this.vel_right);
+        this.move_right = true;
     };
     
     proto.move_right_off = function(dt) {
-        this.vel_want.Subtract(this.vel_right);
+        this.move_right = false;
     };
     
     proto.shoot_on = function() {
@@ -138,15 +184,20 @@ include("Obstacle.js");
         }
     };
     
-    proto.step = function(dt) {    
-        var diff = this.vel_want.Copy();
-        diff.Subtract(this.vel);
-        diff.Multiply(Math.min(1, this.accel * dt));
-        this.vel.Add(diff);
-    
-        var vel = this.vel.Copy();
-        vel.Multiply(dt);
-        this.pos.Add(vel);
+    proto.step = function(dt) {
+        var polar = b2Vec2.Polar,
+            pi = 3.14159,
+            velmax = this.movement.vel_max[0],
+            veladd = new b2Vec2(0, 0);
+        if (this.move_up)
+            veladd.AddPolar(pi * 1.5, velmax);
+        if (this.move_right)
+            veladd.AddPolar(pi * 0.0, velmax);
+        if (this.move_down)
+            veladd.AddPolar(pi * 0.5, velmax);
+        if (this.move_left)
+            veladd.AddPolar(pi * 1.0, velmax);
+        this.movement.step(dt, veladd);
         
         if (this.remove_when_out_of_sight)
             if (this.out_of_sight())
@@ -216,15 +267,18 @@ include("Obstacle.js");
     this.Shell = function(world, pos, size, vel) {
         if (!world) throw "world:World missing";
         this.world = world;
+        
         this.pos = pos || new b2Vec2(0, 0);
         this.size = size || new b2Vec2(5, 5);
         this.rot = [0];
         this.vel = vel || new b2Vec2(0, 0);
+        
         this.sprite = new Rectangle(world, this.pos, this.size, this.rot);
         this.sprite.obj = this;
-        this.world.add_obj(this);
         
         this.damage = this.create_damage_model();
+        
+        this.world.add_obj(this);
     };
     var proto = Shell.prototype;
     
