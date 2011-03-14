@@ -63,6 +63,42 @@ include("Obstacle.js");
 }();
 
 +function() {
+    var ShootingModel = function(world) {
+        this.world = world;
+        this.notRecharged = 0;
+        this.rechargeTime = 0.05;
+    };
+    this.ShootingModel = ShootingModel;
+    var proto = ShootingModel.prototype;
+    
+    proto.create_shell = function(pos, vel) {
+        var shell = new Shell(this.world);
+        shell.movement.pos.SetV(pos);
+        shell.movement.vel.SetV(vel);
+        shell.movement.vel_want.SetV(vel);
+        shell.movement.vel_max[0] = vel.Length();
+        return shell;
+    };
+    
+    proto.shoot = function(dt, movement) {
+        if (!this.notRecharged) {
+            this.notRecharged = this.rechargeTime;
+            var m = movement,
+                pos = new b2Vec2(m.size.x, 0),
+                vel = new b2Vec2(1200, 0);
+            pos.Add(m.pos);
+            vel.Add(m.vel);
+            return this.create_shell(pos, vel);
+        }
+        return null;
+    };
+    
+    proto.step = function(dt) {
+        this.notRecharged = Math.max(0, this.notRecharged - dt);
+    };
+}();
+
++function() {
     var DumbUnit = function(world) {
         this.init(world);
         this.movement.size.Set(20, 20);
@@ -74,8 +110,8 @@ include("Obstacle.js");
         
         this.normsize = null;
         this.isUnit = true;
-        this.notRecharged = 0;
-        this.rechargeTime = 0.05;
+        
+        this.shooting = new ShootingModel(world);
         
         var dmg = this.damage,
             that = this;
@@ -91,7 +127,7 @@ include("Obstacle.js");
     
     var super_collide = proto.collide;
     proto.collide = function(dt, other, coll) {
-        super_collide.call(this, dt, other, coll);
+        super_collide.apply(this, arguments);
         this.movement.rot[0] += (Math.random() - Math.random());
     };
     
@@ -143,21 +179,7 @@ include("Obstacle.js");
         shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
         this.movement.size.SetV(shake);
         
-        if (!this.notRecharged) {
-            this.notRecharged = this.rechargeTime;
-            
-            var m = this.movement,
-                x = m.pos.x,
-                y = m.pos.y,
-                sx = m.size.x,
-                vx = m.vel.x,
-                vy = m.vel.y,
-                shell = new Shell(this.world);
-            shell.movement.pos.Set(x + sx, y);
-            shell.movement.vel.Set(vx + 1200, vy);
-            shell.movement.vel_want.SetV(shell.movement.vel);
-            shell.movement.vel_max[0] = shell.movement.vel.Length();
-        }
+        this.shooting.shoot(dt, this.movement);
     };
     
     var super_step = proto.step;
@@ -177,7 +199,7 @@ include("Obstacle.js");
         
         super_step.call(this, dt, veladd);
         
-        this.notRecharged = Math.max(0, this.notRecharged - dt);
+        this.shooting.step(dt);
     };
 }();
 
