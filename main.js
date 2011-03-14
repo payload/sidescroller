@@ -5,6 +5,12 @@ var include = function(file) {
     document.write('<script '+args+'"></script>');
 };
 
+function inherit(a, b) {
+    a.prototype = new b();
+    a.prototype.constructor = a;
+    return a;
+}
+
 include("Game.js");
 
 window.onload = function(prog) {

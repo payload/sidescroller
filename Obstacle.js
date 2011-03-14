@@ -1,42 +1,99 @@
 include("b2Vec2.js");
 
 +function() {
-    this.Obstacle = function(world) {
-        if (!world) throw "world:World missing";
+    this.FlyingObject = function(){};
+    FlyingObject.prototype = {
+    
+    init: function(world) {
         this.world = world;
-        
         this.movement = new MovementModel();
-        this.movement.size.Set(10, 10);
-        
         this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
-        
-        this.damage = this.create_damage_model();
-        
+        this.damage = new DamageModel();
+        this.keep_in_field = false;
+        this.remove_when_out_of_sight = true;
         this.world.add_obj(this);
-    };
-    var proto = Obstacle.prototype;
+    },
     
-    proto.step = function(dt) {
-        this.movement.step(dt);
-        
-        if (!this.world.in_field(this.movement.pos)) {
-            this.remove();
+    collide: function(dt, other, coll) {
+        var obj = other.obj;
+        if (obj && 'damage' in obj)
+            this.damage.collide(dt, obj.damage, coll);
+    },
+    
+    step: function(dt, veladd) {
+        this.movement.step(dt, veladd);
+        if (this.remove_when_out_of_sight)
+            if (this.out_of_sight())
+                this.remove();
+        if (this.keep_in_field)
+            this.set_pos_to_field();
+    },
+    
+    remove: function() {
+        this.world.remove_obj(this);
+        this.sprite.remove();
+    },
+    
+    out_of_sight: function() {
+        var field = this.world.field,
+            tl = new b2Vec2(field[0], field[1]),
+            br = new b2Vec2(field[2], field[3]),
+            m = this.movement,
+            pos = m.pos,
+            s = m.size.Length(),
+            svec = new b2Vec2(s, s);
+        br.x *= 2;
+        tl.Subtract(svec);
+        br.Add(svec);
+        var out =
+            pos.x < tl.x ||
+            pos.x > br.x ||
+            pos.y < tl.y ||
+            pos.y > br.y;
+        return out;
+    },
+    
+    set_pos_to_field: function() {
+        var field = this.world.field,
+            tl = new b2Vec2(field[0], field[1]),
+            br = new b2Vec2(field[2], field[3]),
+            m = this.movement,
+            pos = m.pos,
+            vel = m.vel,
+            s = m.size.Length(),
+            svec = new b2Vec2(s*0.5, s*0.5);
+        tl.Add(svec);
+        br.Subtract(svec);
+        if (pos.x < tl.x) {
+            pos.x = tl.x;
+            vel.Set(0, vel.y);
         }
-    };
-    
-    proto.create_damage_model = function() {
-        var dmg = new DamageModel();
+        if (pos.x > br.x) {
+            pos.x = br.x;
+            vel.Set(0, vel.y);
+        }
+        if (pos.y < tl.y) {
+            pos.y = tl.y;
+            vel.Set(vel.x, 0);
+        }
+        if (pos.y > br.y) {
+            pos.y = br.y;
+            vel.Set(vel.x, 0);
+        }
+    }
+
+}}();
+
++function() {
+    var Obstacle = function(world) {
+        this.init(world);
+        this.movement.size.Set(10, 10);
+        var dmg = this.damage;
         dmg.energy = 0;
         dmg.to_apply = 30;
         dmg.factor = 0;
         dmg.die = function(){};
-        return dmg;
     };
-    
-    proto.collide = function(dt, other, coll) {
-        var obj = other.obj;
-        if (obj && 'damage' in obj) 
-            this.damage.collide(dt, obj.damage, coll);
-    };
+    this.Obstacle = inherit(Obstacle, FlyingObject);
 }();

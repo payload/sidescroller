@@ -22,17 +22,16 @@ include("Units.js");
             width = this.width,
             height = this.height;
         for (var i = 0; i < count; i++) {
-            var obj = new Obstacle(world);
-            
-            var x = width * Math.random(),
+            var obj = new Obstacle(world),
+                x = width * Math.random(),
                 y = height * Math.random();
             obj.movement.pos.Set(x, y);
         }
     };
     
     proto.create_spawner = function() {
-        var that = this;
-        var t = new Timer(this.world, 3, function() {
+        var that = this,
+            t = new Timer(this.world, 3, function() {
             that.create_some_enemies(1 + 2 * Math.random());
         });
     };
@@ -55,13 +54,11 @@ include("Units.js");
     proto.create_player = function() {
         var world = this.world,
             width = this.width,
-            height = this.height;
-
-        var player = new DumbUnit(world);
-        player.keep_in_field = true;
-        
-        var x = width * Math.random(),
+            height = this.height,
+            player = new DumbUnit(world),
+            x = width * Math.random(),
             y = height * Math.random();
+        player.keep_in_field = true;
         player.movement.pos.Set(x, y);
         
         // W
@@ -94,8 +91,8 @@ include("Units.js");
     };
 
     proto.create_world = function() {
-        var field = [0, 0, this.width, this.height];
-        var world = new World(field);
+        var field = [0, 0, this.width, this.height],
+            world = new World(field);
         return world;
     };
     

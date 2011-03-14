@@ -63,11 +63,8 @@ include("Obstacle.js");
 }();
 
 +function() {
-    this.DumbUnit = function(world) {
-        if (!world) throw "world:World missing";
-        this.world = world;
-        
-        this.movement = new MovementModel();
+    var DumbUnit = function(world) {
+        this.init(world);
         this.movement.size.Set(20, 20);
         
         this.move_up = false;
@@ -79,20 +76,8 @@ include("Obstacle.js");
         this.isUnit = true;
         this.notRecharged = 0;
         this.rechargeTime = 0.05;
-        this.keep_in_field = false;
-        this.remove_when_out_of_sight = true;
         
-        this.sprite = new Rectangle(world, this.movement);
-        this.sprite.obj = this;
-        
-        this.damage = this.create_damage_model();
-        
-        this.world.add_obj(this);
-    };
-    var proto = DumbUnit.prototype;
-    
-    proto.create_damage_model = function() {
-        var dmg = new DamageModel(),
+        var dmg = this.damage,
             that = this;
         dmg.energy = 10;
         dmg.to_apply = 20;
@@ -100,13 +85,13 @@ include("Obstacle.js");
         dmg.die = function() {
             that.remove();
         };
-        return dmg;
     };
+    this.DumbUnit = inherit(DumbUnit, FlyingObject);
+    var proto = DumbUnit.prototype;
     
+    var super_collide = proto.collide;
     proto.collide = function(dt, other, coll) {
-        var obj = other.obj;
-        if (obj && 'damage' in obj)
-            this.damage.collide(dt, obj.damage, coll);
+        super_collide.call(this, dt, other, coll);
         this.movement.rot[0] += (Math.random() - Math.random());
     };
     
@@ -175,6 +160,7 @@ include("Obstacle.js");
         }
     };
     
+    var super_step = proto.step;
     proto.step = function(dt) {
         var polar = b2Vec2.Polar,
             pi = 3.14159,
@@ -188,117 +174,22 @@ include("Obstacle.js");
             veladd.AddPolar(pi * 0.5, velmax);
         if (this.move_left)
             veladd.AddPolar(pi * 1.0, velmax);
-        this.movement.step(dt, veladd);
         
-        if (this.remove_when_out_of_sight)
-            if (this.out_of_sight())
-                this.remove();
-        if (this.keep_in_field)
-            this.set_pos_to_field();
+        super_step.call(this, dt, veladd);
         
         this.notRecharged = Math.max(0, this.notRecharged - dt);
-    };
-    
-    proto.out_of_sight = function() {
-        var field = this.world.field,
-            tl = new b2Vec2(field[0], field[1]),
-            br = new b2Vec2(field[2], field[3]),
-            m = this.movement,
-            pos = m.pos,
-            s = m.size.Length(),
-            svec = new b2Vec2(s, s);
-        br.x *= 2;
-        tl.Subtract(svec);
-        br.Add(svec);
-        var out =
-            pos.x < tl.x ||
-            pos.x > br.x ||
-            pos.y < tl.y ||
-            pos.y > br.y;
-        return out;
-    };
-    
-    proto.set_pos_to_field = function() {
-        var field = this.world.field,
-            tl = new b2Vec2(field[0], field[1]),
-            br = new b2Vec2(field[2], field[3]),
-            m = this.movement,
-            pos = m.pos,
-            vel = m.vel,
-            s = m.size.Length(),
-            svec = new b2Vec2(s*0.5, s*0.5);
-        tl.Add(svec);
-        br.Subtract(svec);
-        if (pos.x < tl.x) {
-            pos.x = tl.x;
-            vel.Set(0, vel.y);
-        }
-        if (pos.x > br.x) {
-            pos.x = br.x;
-            vel.Set(0, vel.y);
-        }
-        if (pos.y < tl.y) {
-            pos.y = tl.y;
-            vel.Set(vel.x, 0);
-        }
-        if (pos.y > br.y) {
-            pos.y = br.y;
-            vel.Set(vel.x, 0);
-        }
-    }
-    
-    proto.draw = function(ctx) {
-    };
-    
-    proto.remove = function() {
-        this.world.remove_obj(this);
-        this.sprite.remove();
     };
 }();
 
 +function() {
-    this.Shell = function(world) {
-        if (!world) throw "world:World missing";
-        this.world = world;
-        
-        this.movement = new MovementModel();
+    var Shell = function(world) {
+        var that = this;
+        this.init(world);
         this.movement.size.Set(5, 5);
-        
-        this.sprite = new Rectangle(world, this.movement);
-        this.sprite.obj = this;
-        
-        this.damage = this.create_damage_model();
-        
-        this.world.add_obj(this);
-    };
-    var proto = Shell.prototype;
-    
-    proto.create_damage_model = function() {
-        var dmg = new DamageModel(),
-            that = this;
-        dmg.die = function(other) {
+        this.damage.die = function(other) {
             that.remove();
             this.explode(other, 1);
         };
-        return dmg;
     };
-    
-    proto.collide = function(dt, other, coll) {
-        var obj = other.obj;
-        if (obj && 'damage' in obj)
-            this.damage.collide(dt, obj.damage, coll);
-    };
-    
-    proto.step = function(dt) {
-        this.movement.step(dt);
-        
-        if (!this.world.in_field(this.movement.pos)) {
-            this.remove();
-        }
-    };
-    
-    proto.remove = function() {
-        this.world.remove_obj(this);
-        this.sprite.remove();
-    };
+    this.Shell = inherit(Shell, FlyingObject);
 }();
