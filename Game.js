@@ -65,6 +65,7 @@ include("Units.js");
             y = height * Math.random();
         player.keep_in_field = true;
         player.movement.pos.Set(x, y);
+        player.sprite.style.fill = player.sprite.style.stroke;
         
         // W
         bindings[87] = [

@@ -36,6 +36,10 @@ include("b2Vec2.js");
         this.rot = m.rot || [0];
         this.type = "rect";
         this.obj = null;
+        this.style = {
+            stroke: 'gray',
+            fill: null
+        };
         this.world.add_shape(this);
     };
     var proto = Rectangle.prototype;
@@ -59,7 +63,14 @@ include("b2Vec2.js");
         ctx.lineTo( sx,  sy);
         ctx.lineTo(-sx,  sy);
         ctx.closePath();
-        ctx.stroke();
+        if (this.style.stroke !== null) {
+            ctx.strokeStyle = this.style.stroke;
+            ctx.stroke();
+        }
+        if (this.style.fill !== null) {
+            ctx.fillStyle = this.style.fill;
+            ctx.fill();
+        }
         ctx.restore();
     };
 }();
