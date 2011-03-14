@@ -67,12 +67,8 @@ include("Obstacle.js");
         if (!world) throw "world:World missing";
         this.world = world;
         
-        var m = new MovementModel();
-        this.movement = m;
-        this.size = m.size;
-        this.vel = m.vel;
-        this.rot = m.rot;
-        this.size.Set(20, 20);
+        this.movement = new MovementModel();
+        this.movement.size.Set(20, 20);
         
         this.move_up = false;
         this.move_down = false;
@@ -111,7 +107,7 @@ include("Obstacle.js");
         var obj = other.obj;
         if (obj && 'damage' in obj)
             this.damage.collide(dt, obj.damage, coll);
-        this.rot[0] += (Math.random() - Math.random());
+        this.movement.rot[0] += (Math.random() - Math.random());
     };
     
     proto.move_up_on = function(dt) {
@@ -148,19 +144,19 @@ include("Obstacle.js");
     
     proto.shoot_on = function() {
         if (this.normsize) return;
-        this.normsize = this.size.Copy();
+        this.normsize = this.movement.size.Copy();
     };
     
     proto.shoot_off = function() {
         if (!this.normsize) return;
-        this.size.SetV(this.normsize);
+        this.movement.size.SetV(this.normsize);
         this.normsize = null;
     };
     
     proto.shoot = function(dt) {
         var shake = this.normsize.Copy();
         shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
-        this.size.SetV(shake);
+        this.movement.size.SetV(shake);
         
         if (!this.notRecharged) {
             this.notRecharged = this.rechargeTime;
@@ -168,14 +164,14 @@ include("Obstacle.js");
             var m = this.movement,
                 x = m.pos.x,
                 y = m.pos.y,
-                sx = this.size.x,
-                vx = this.vel.x,
-                vy = this.vel.y,
+                sx = m.size.x,
+                vx = m.vel.x,
+                vy = m.vel.y,
                 shell = new Shell(this.world);
             shell.movement.pos.Set(x + sx, y);
-            shell.vel.Set(vx + 1200, vy);
-            shell.movement.vel_want.SetV(shell.vel);
-            shell.movement.vel_max[0] = shell.vel.Length();
+            shell.movement.vel.Set(vx + 1200, vy);
+            shell.movement.vel_want.SetV(shell.movement.vel);
+            shell.movement.vel_max[0] = shell.movement.vel.Length();
         }
     };
     
@@ -209,7 +205,7 @@ include("Obstacle.js");
             br = new b2Vec2(field[2], field[3]),
             m = this.movement,
             pos = m.pos,
-            s = this.size.Length(),
+            s = m.size.Length(),
             svec = new b2Vec2(s, s);
         br.x *= 2;
         tl.Subtract(svec);
@@ -228,8 +224,8 @@ include("Obstacle.js");
             br = new b2Vec2(field[2], field[3]),
             m = this.movement,
             pos = m.pos,
-            vel = this.vel,
-            s = this.size.Length(),
+            vel = m.vel,
+            s = m.size.Length(),
             svec = new b2Vec2(s*0.5, s*0.5);
         tl.Add(svec);
         br.Subtract(svec);
@@ -265,12 +261,8 @@ include("Obstacle.js");
         if (!world) throw "world:World missing";
         this.world = world;
         
-        var m = new MovementModel();
-        this.movement = m;
-        this.size = m.size;
-        this.rot = m.rot;
-        this.vel = m.vel;
-        m.size.Set(5, 5);
+        this.movement = new MovementModel();
+        this.movement.size.Set(5, 5);
         
         this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;

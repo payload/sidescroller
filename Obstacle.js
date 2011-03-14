@@ -5,12 +5,8 @@ include("b2Vec2.js");
         if (!world) throw "world:World missing";
         this.world = world;
         
-        var m = new MovementModel();
-        this.movement = m;
-        this.size = m.size;
-        this.rot = m.rot; 
-        this.vel = m.vel;
-        m.size.Set(10, 10);
+        this.movement = new MovementModel();
+        this.movement.size.Set(10, 10);
         
         this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
