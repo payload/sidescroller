@@ -10,7 +10,6 @@ include("Units.js");
         this.width = canvas.width;
         this.height = canvas.height;
         this.world = this.create_world();
-        this.create_some_obstacles(5);
         this.create_player();
         this.create_spawner();
     };
@@ -23,16 +22,22 @@ include("Units.js");
             height = this.height;
         for (var i = 0; i < count; i++) {
             var obj = new Obstacle(world),
-                x = width * Math.random(),
+                m = obj.movement,
+                x = width + 10,
                 y = height * Math.random();
-            obj.movement.pos.Set(x, y);
+            m.pos.Set(x, y);
+            m.vel.Set(-120 + 40 * Math.random(), 0);
+            m.vel_want.SetV(m.vel);
         }
     };
     
     proto.create_spawner = function() {
         var that = this,
-            t = new Timer(this.world, 3, function() {
-            that.create_some_enemies(1 + 2 * Math.random());
+            t = new Timer(this.world, 0.4, function() {
+            if (Math.random() < 0.3)
+                that.create_some_enemies(1 + 2 * Math.random());
+            if (Math.random() < 0.3)
+                that.create_some_obstacles(1 + 3 * Math.random());
         });
     };
     
@@ -46,7 +51,7 @@ include("Units.js");
                 x = width + 10,
                 y = height * Math.random();
             m.pos.Set(x + m.size.x, y);
-            m.vel.Set(-100, 0);
+            m.vel.Set(-100 + 40 * Math.random(), 0);
             m.vel_want.SetV(m.vel);
         }
     };
