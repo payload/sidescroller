@@ -2,6 +2,7 @@
 include("b2Vec2.js");
 include("Sprites.js");
 include("Obstacle.js");
+include("ShootingModel.js");
 
 +function() {
     this.DamageModel = function(){
@@ -63,42 +64,6 @@ include("Obstacle.js");
 }();
 
 +function() {
-    var ShootingModel = function(world) {
-        this.world = world;
-        this.notRecharged = 0;
-        this.rechargeTime = 0.05;
-    };
-    this.ShootingModel = ShootingModel;
-    var proto = ShootingModel.prototype;
-    
-    proto.create_shell = function(pos, vel) {
-        var shell = new Shell(this.world);
-        shell.movement.pos.SetV(pos);
-        shell.movement.vel.SetV(vel);
-        shell.movement.vel_want.SetV(vel);
-        shell.movement.vel_max[0] = vel.Length();
-        return shell;
-    };
-    
-    proto.shoot = function(dt, movement) {
-        if (!this.notRecharged) {
-            this.notRecharged = this.rechargeTime;
-            var m = movement,
-                pos = new b2Vec2(m.size.x, 0),
-                vel = new b2Vec2(1200, 0);
-            pos.Add(m.pos);
-            vel.Add(m.vel);
-            return this.create_shell(pos, vel);
-        }
-        return null;
-    };
-    
-    proto.step = function(dt) {
-        this.notRecharged = Math.max(0, this.notRecharged - dt);
-    };
-}();
-
-+function() {
     var DumbUnit = function(world) {
         this.init(world);
         this.movement.size.Set(20, 20);
@@ -109,8 +74,6 @@ include("Obstacle.js");
         this.move_right = false;
         
         this.normsize = null;
-        this.isUnit = true;
-        
         this.shooting = new ShootingModel(world);
         
         var dmg = this.damage,
@@ -175,10 +138,11 @@ include("Obstacle.js");
     };
     
     proto.shoot = function(dt) {
-        var shake = this.normsize.Copy();
-        shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
-        this.movement.size.SetV(shake);
-        
+        if (this.normsize !== null) {
+            var shake = this.normsize.Copy();
+            shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
+            this.movement.size.SetV(shake);
+        }
         this.shooting.shoot(dt, this.movement);
     };
     
@@ -198,8 +162,7 @@ include("Obstacle.js");
             veladd.AddPolar(pi * 1.0, velmax);
         
         super_step.call(this, dt, veladd);
-        
-        this.shooting.step(dt);
+        this.shooting.step(dt, this.movement);
     };
 }();
 

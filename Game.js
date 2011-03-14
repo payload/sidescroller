@@ -36,7 +36,7 @@ include("Units.js");
             t = new Timer(this.world, 0.4, function() {
             if (Math.random() < 0.3)
                 that.create_some_enemies(1 + 2 * Math.random());
-            if (Math.random() < 0.3)
+            if (Math.random() < 0.2)
                 that.create_some_obstacles(1 + 3 * Math.random());
         });
     };
@@ -64,6 +64,9 @@ include("Units.js");
             x = width * Math.random(),
             y = height * Math.random();
         player.keep_in_field = true;
+        player.shooting.auto_shoot = false;
+        player.shooting.recharge_time = 0.05;
+        player.shooting.shell_vel.Set(1200, 0);
         player.movement.pos.Set(x, y);
         player.sprite.style.fill = player.sprite.style.stroke;
         

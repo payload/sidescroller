@@ -7,9 +7,9 @@ include("b2Vec2.js");
     init: function(world) {
         this.world = world;
         this.movement = new MovementModel();
+        this.damage = new DamageModel();
         this.sprite = new Rectangle(world, this.movement);
         this.sprite.obj = this;
-        this.damage = new DamageModel();
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
         this.world.add_obj(this);
