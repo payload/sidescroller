@@ -2,9 +2,9 @@ include("b2Vec2.js");
 
 +function() {
     this.FlyingObject = function(){};
-    FlyingObject.prototype = {
+    var proto = FlyingObject.prototype;
     
-    init: function(world) {
+    proto.init = function(world) {
         this.world = world;
         this.movement = new MovementModel();
         this.damage = new DamageModel();
@@ -13,30 +13,30 @@ include("b2Vec2.js");
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
         this.world.add_obj(this);
-    },
+    };
     
-    collide: function(dt, other, coll) {
+    proto.collide = function(dt, other, coll) {
         var obj = other.obj;
         if (obj && 'damage' in obj)
             return this.damage.collide(dt, obj.damage, coll);
         return false;
-    },
+    };
     
-    step: function(dt, veladd) {
+    proto.step = function(dt, veladd) {
         this.movement.step(dt, veladd);
         if (this.remove_when_out_of_sight)
             if (this.out_of_sight())
                 this.remove();
         if (this.keep_in_field)
             this.set_pos_to_field();
-    },
+    };
     
-    remove: function() {
+    proto.remove = function() {
         this.world.remove_obj(this);
         this.sprite.remove();
-    },
+    };
     
-    out_of_sight: function() {
+    proto.out_of_sight = function() {
         var field = this.world.field,
             tl = new b2Vec2(field[0], field[1]),
             br = new b2Vec2(field[2], field[3]),
@@ -53,9 +53,9 @@ include("b2Vec2.js");
             pos.y < tl.y ||
             pos.y > br.y;
         return out;
-    },
+    };
     
-    set_pos_to_field: function() {
+    proto.set_pos_to_field = function() {
         var field = this.world.field,
             tl = new b2Vec2(field[0], field[1]),
             br = new b2Vec2(field[2], field[3]),
@@ -82,9 +82,9 @@ include("b2Vec2.js");
             pos.y = br.y;
             vel.Set(vel.x, 0);
         }
-    }
+    };
 
-}}();
+}();
 
 +function() {
     var Obstacle = function(world) {

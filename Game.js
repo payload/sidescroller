@@ -26,7 +26,7 @@ include("Units.js");
                 x = width + 10,
                 y = height * Math.random();
             m.pos.Set(x, y);
-            m.vel.Set(-120 + 40 * Math.random(), 0);
+            m.vel.Set(-160 + 40 * Math.random(), 0);
             m.vel_want.SetV(m.vel);
         }
     };
@@ -34,9 +34,9 @@ include("Units.js");
     proto.create_spawner = function() {
         var that = this,
             t = new Timer(this.world, 0.4, function() {
-            if (Math.random() < 0.3)
-                that.create_some_enemies(1 + 2 * Math.random());
             if (Math.random() < 0.2)
+                that.create_some_enemies(1 + 2 * Math.random());
+            if (Math.random() < 0.3)
                 that.create_some_obstacles(1 + 3 * Math.random());
         });
     };
