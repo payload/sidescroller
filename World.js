@@ -1,5 +1,3 @@
-include("b2Vec2.js");
-
 +function() {
     this.World = function(field) {
         this.field = field;

@@ -1,5 +1,3 @@
-include("b2Vec2.js");
-
 /*
 +function() {
     this.Circle = function(world, pos, radius) {

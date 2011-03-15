@@ -1,5 +1,3 @@
-include("b2Vec2.js");
-
 +function() {
     var ShootingModel = function(world) {
         this.world = world;

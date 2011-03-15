@@ -1,5 +1,3 @@
-console.log("main begin");
-
 var include = function(file) {
     var args = 'type="text/javascript" src="' + file;
     document.write('<script '+args+'"></script>');
@@ -11,7 +9,18 @@ function inherit(a, b) {
     return a;
 }
 
+include("b2Vec2.js");
 include("Game.js");
+include("FlyingObject.js");
+include("World.js");
+include("Obstacle.js");
+include("Units.js");
+include("Sprites.js");
+include("ShootingModel.js");
+include("Shell.js");
+include("DamageModel.js");
+include("MovementModel.js");
+include("Timer.js");
 
 window.onload = function(prog) {
     var canvas = document.getElementById("canvas");
