@@ -18,7 +18,8 @@ include("b2Vec2.js");
     collide: function(dt, other, coll) {
         var obj = other.obj;
         if (obj && 'damage' in obj)
-            this.damage.collide(dt, obj.damage, coll);
+            return this.damage.collide(dt, obj.damage, coll);
+        return false;
     },
     
     step: function(dt, veladd) {

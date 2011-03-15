@@ -50,6 +50,8 @@ include("Units.js");
                 m = obj.movement,
                 x = width + 10,
                 y = height * Math.random();
+            obj.damage.groups.push("enemy");
+            obj.shooting.shell_group = "enemy";
             m.pos.Set(x + m.size.x, y);
             m.vel.Set(-100 + 40 * Math.random(), 0);
             m.vel_want.SetV(m.vel);
@@ -67,6 +69,8 @@ include("Units.js");
         player.shooting.auto_shoot = false;
         player.shooting.recharge_time = 0.05;
         player.shooting.shell_vel.Set(1200, 0);
+        player.damage.groups.push("player");
+        player.shooting.shell_group = "player";
         player.movement.pos.Set(x, y);
         player.sprite.style.fill = player.sprite.style.stroke;
         

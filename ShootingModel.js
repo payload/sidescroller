@@ -7,6 +7,7 @@ include("b2Vec2.js");
         this.not_recharged = this.recharge_time * Math.random();
         this.auto_shoot = true;
         this.shell_vel = new b2Vec2(-400, 0);
+        this.shell_group = null;
     };
     this.ShootingModel = ShootingModel;
     var proto = ShootingModel.prototype;
@@ -17,6 +18,8 @@ include("b2Vec2.js");
         shell.movement.vel.SetV(vel);
         shell.movement.vel_want.SetV(vel);
         shell.movement.vel_max[0] = vel.Length();
+        if (this.shell_group !== null)
+            shell.damage.groups.push(this.shell_group);
         return shell;
     };
     
