@@ -3,8 +3,8 @@ include("b2Vec2.js");
 +function() {
     var ShootingModel = function(world) {
         this.world = world;
-        this.not_recharged = 0;
         this.recharge_time = 2;
+        this.not_recharged = this.recharge_time * Math.random();
         this.auto_shoot = true;
         this.shell_vel = new b2Vec2(-400, 0);
     };
