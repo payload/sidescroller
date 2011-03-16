@@ -1,6 +1,7 @@
 +function() {
     
     this.Game = function(canvas, bindings) {
+        console.log("Game");
         this.canvas = canvas;
         this.bindings = bindings;
         this.width = canvas.width;
