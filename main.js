@@ -77,6 +77,11 @@ var loop = function(game, ctx, canvas, dt) {
     };
     
     proto.disable = function(key) {
+        var active_binding = this.active_bindings[key];
+        if (active_binding) { // if key is pressed
+            if (active_binding[1])
+                this.bindings[key][1](); // call up
+        }
         delete this.bindings[key];
         delete this.active_bindings[key];
     };
