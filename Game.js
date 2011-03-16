@@ -6,11 +6,63 @@
         this.width = canvas.width;
         this.height = canvas.height;
         this.world = this.create_world();
-        this.create_player();
+        this.player = this.create_player();
         this.create_spawner();
+        this.pause = false;
+        this.set_bindings();
+    };
+    var proto = Game.prototype;
+
+    proto.disable_player_bindings = function() {
+        var that = this;
+        [87, 65, 83, 68, 16].forEach(function(x){
+            that.bindings.disable(x);
+        });
     };
 
-    var proto = Game.prototype;
+    proto.set_bindings = function() {
+        var that = this,
+            bindings = this.bindings,
+            player = this.player;
+        // P
+        bindings.enable(80,
+            null,
+            function() { that.switch_pause() },
+            null);
+        // W
+        bindings.enable(87,
+            function(dt){player.move_up_on(dt)},
+            function(dt){player.move_up_off(dt)},
+            null);
+        // A
+        bindings.enable(65,
+            function(dt){player.move_left_on(dt)}, 
+            function(dt){player.move_left_off(dt)},
+            null);
+        // S
+        bindings.enable(83,
+            function(dt){player.move_down_on(dt)}, 
+            function(dt){player.move_down_off(dt)},
+            null);
+        // D
+        bindings.enable(68,
+            function(dt){player.move_right_on(dt)}, 
+            function(dt){player.move_right_off(dt)},
+            null);
+        // Shift
+        bindings.enable(16,
+            function(){player.shoot_on()},
+            function(){player.shoot_off()},
+            function(dt){player.shoot(dt)});
+    };
+
+    proto.switch_pause = function() {
+        this.pause = !this.pause;
+        if (this.pause)
+            this.disable_player_bindings();
+        else
+            this.set_bindings();
+    };
 
     proto.create_some_obstacles = function(count) {
         var world = this.world,
@@ -18,12 +70,9 @@
             height = this.height;
         for (var i = 0; i < count; i++) {
             var obj = new Obstacle(world),
-                m = obj.movement,
                 x = width + 10,
                 y = height * Math.random();
-            m.pos.Set(x, y);
-            m.vel.Set(-160 + 40 * Math.random(), 0);
-            m.vel_want.SetV(m.vel);
+            obj.movement.pos.Set(x, y);
         }
     };
     
@@ -69,33 +118,6 @@
         player.shooting.shell_group = "player";
         player.movement.pos.Set(x, y);
         player.sprite.style.fill = player.sprite.style.stroke;
-        
-        // W
-        bindings[87] = [
-            function(dt){player.move_up_on(dt)},
-            function(dt){player.move_up_off(dt)},
-            null];
-        // A
-        bindings[65] = [
-            function(dt){player.move_left_on(dt)}, 
-            function(dt){player.move_left_off(dt)},
-            null];
-        // S
-        bindings[83] = [
-            function(dt){player.move_down_on(dt)}, 
-            function(dt){player.move_down_off(dt)},
-            null];
-        // D
-        bindings[68] = [
-            function(dt){player.move_right_on(dt)}, 
-            function(dt){player.move_right_off(dt)},
-            null];
-        // Shift
-        bindings[16] = [
-            function(){player.shoot_on()},
-            function(){player.shoot_off()},
-            function(dt){player.shoot(dt)}];
-        
         return player;
     };
 
@@ -119,6 +141,7 @@
     };
     
     proto.step = function(dt) {
+        if (this.pause) return;
         var chandler = this.collision_handler,
             collisions = this.world.get_collisions();
         for (var i = 0, collision; collision = collisions[i]; i++) {

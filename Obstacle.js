@@ -1,8 +1,14 @@
 +function() {
     var Obstacle = function(world) {
         this.init(world);
-        this.movement.size.Set(10, 10);
-        var dmg = this.damage;
+        
+        var m = this.movement,
+            dmg = this.damage;
+
+        m.size.Set(10, 10);
+        m.vel.Set(-160 + 40 * Math.random(), 0);
+        m.vel_want.SetV(m.vel);
+
         dmg.energy = 0;
         dmg.to_apply = 30;
         dmg.factor = 0;

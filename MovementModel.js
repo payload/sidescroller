@@ -7,7 +7,7 @@
         this.vel = new b2Vec2(0, 0);
         this.vel_want = new b2Vec2(0, 0);
         this.vel_max = [400];
-        this.accel = [2];
+        this.accel = [3];
     };
     var proto = MovementModel.prototype;
     

@@ -26,7 +26,8 @@ window.onload = function(prog) {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     
-    var game = new Game(canvas, bindings);
+    this.keybindings = new KeyBindings();
+    var game = new Game(canvas, this.keybindings);
     
     canvas.onmousemove = function(e) {
     };
@@ -52,11 +53,7 @@ window.onload = function(prog) {
 var loop = function(game, ctx, canvas, dt) {
     game.step(dt);
 
-    for (var i in active_bindings) {
-        var during = active_bindings[i][0];
-        if (during) during(dt);
-        active_bindings[i][1] = true;
-    }
+    keybindings.step(dt);
 
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,33 +63,64 @@ var loop = function(game, ctx, canvas, dt) {
     ctx.restore();
 };
 
-// down, up, during
-var bindings = {};
-
-var active_bindings = {};
++function(){
+    var KeyBindings = function() {
+        // down, up, during
+        this.bindings = {}
+        this.active_bindings = {}
+    };
+    this.KeyBindings = KeyBindings;
+    var proto = KeyBindings.prototype;
+    
+    proto.enable = function(key, down, up, during) {
+        this.bindings[key] = [down, up, during];
+    };
+    
+    proto.disable = function(key) {
+        delete this.bindings[key];
+        delete this.active_bindings[key];
+    };
+    
+    proto.step = function(dt) {
+        var active_bindings = this.active_bindings;
+        for (var i in active_bindings) {
+            var during = active_bindings[i][0];
+            if (during) during(dt);
+            active_bindings[i][1] = true;
+        }
+    };
+    
+    proto.keydown = function(key) {
+        var k = key.which;
+        console.log("keydown", k);
+        if (k in this.bindings && !(k in this.active_bindings)) {
+            var down = this.bindings[k][0];
+            if (down) down();
+            var during = this.bindings[k][2];
+            this.active_bindings[k] = [during, false];
+        }
+    };
+    
+    proto.keyup = function(key) {
+        var k = key.which;
+        if (k in this.bindings) {
+            var during = this.bindings[k][2];
+            if (during) {
+                var during_called = this.active_bindings[k];
+                if (!during_called || !during_called[1]) during();
+            }
+            delete this.active_bindings[k];
+            var up = this.bindings[k][1];
+            if (up) up();
+        }
+    };
+}();
 
 window.onkeydown = function(key) {
-    var k = key.which;
-    //console.log("keydown", k);
-    if (k in bindings && !(k in active_bindings)) {
-        var down = bindings[k][0];
-        if (down) down();
-        var during = bindings[k][2];
-        active_bindings[k] = [during, false];
-    };
+    keybindings.keydown(key);
 };
 
 window.onkeyup = function(key) {
-    var k = key.which;
-    if (k in bindings) {
-        var during = bindings[k][2];
-        if (during) {
-            var during_called = active_bindings[k];
-            if (!during_called || !during_called[1]) during();
-        }
-        delete active_bindings[k];
-        var up = bindings[k][1];
-        if (up) up();
-    };
+    keybindings.keyup(key);
 };
 
