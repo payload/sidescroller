@@ -13,15 +13,17 @@ window.onload = ->
     canvas.onmouseup = (e) ->
         window.onkeyup({which: 16}) if e.button == 0
 
-    interval = 10
-    dt = interval/1000    
+    interval = 30
+    steps = 3
+    dt = interval / steps / 1000
     setInterval(
-        -> mainloop(game, ctx, canvas, dt),
+        -> mainloop(game, ctx, canvas, dt, steps),
         interval)
 
-mainloop = (game, ctx, canvas, dt) ->
-    game.step(dt);
-    keybindings.step(dt);
+mainloop = (game, ctx, canvas, dt, steps) ->
+    for i in [0...steps]
+        game.step(dt);
+        keybindings.step(dt);
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.draw(ctx);
