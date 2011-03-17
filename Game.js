@@ -122,6 +122,7 @@
             player = new DumbUnit(world),
             x = width * Math.random(),
             y = height * Math.random();
+        player.damage.regenerate = 0.3;
         player.keep_in_field = true;
         player.shooting.auto_shoot = false;
         player.shooting.recharge_time = 0.05;
@@ -129,7 +130,7 @@
         player.damage.groups.push("player");
         player.shooting.shell_group = "player";
         player.movement.pos.Set(x, y);
-        player.sprite.style.fill = player.sprite.style.stroke;
+        player.show_energy = true;
         return player;
     };
 
@@ -168,6 +169,10 @@
     };
     
     proto.draw = function(ctx) {
+        this.world.foreach_obj( function(obj) {
+            if ("draw" in obj) obj.draw();
+        });
+    
         ctx.save();
         
         ctx.lineWidth = 2;

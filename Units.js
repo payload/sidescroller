@@ -15,6 +15,7 @@
         var dmg = this.damage,
             that = this;
         dmg.energy = 10;
+        dmg.max_energy = 10;
         dmg.to_apply = 20;
         dmg.factor = 1;
         dmg.die = function() {

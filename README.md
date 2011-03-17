@@ -6,9 +6,11 @@
 ### using
 
 * JavaScript and CoffeeScript - I learned about CoffeeScript and I think I will port my code to this.
-* HTML5 Canvas - hey, it has a 2D graphics API which is not a pain! Maybe… good!
+* HTML5 Canvas
+    * hey, it has a 2D graphics API which is not a pain!
+    * well, setting colors with an alpha value is weird
 * http://whatthecommit.com - you won't see any sane commit message in this project!
-  * credits for this git alias go to [_john](https://github.com/tuxcodejohn) and [dodo](https://github.com/dodo)
+    * credits for this git alias go to [_john](https://github.com/tuxcodejohn) and [dodo](https://github.com/dodo)
 
 #### 
 

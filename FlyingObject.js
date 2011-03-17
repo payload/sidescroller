@@ -11,6 +11,7 @@
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
         this.removed = false;
+        this.show_energy = false;
         this.world.add_obj(this);
     };
     
@@ -25,6 +26,7 @@
     proto.step = function(dt, veladd) {
         if (this.removed)
             return this.remove();
+        this.damage.step(dt);
         this.movement.step(dt, veladd);
         if (this.remove_when_out_of_sight)
             if (this.out_of_sight())
@@ -86,6 +88,16 @@
         if (pos.y > br.y) {
             pos.y = br.y;
             vel.Set(vel.x, 0);
+        }
+    };
+    
+    proto.draw = function() {
+        if (this.show_energy) {
+            var style = this.sprite.style,
+                dmg = this.damage,
+                energy_ratio = dmg.energy / dmg.max_energy;
+            style.fill = style.stroke.slice(0, 4);
+            style.fill[3] = energy_ratio;
         }
     };
 

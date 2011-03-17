@@ -35,7 +35,7 @@
         this.type = "rect";
         this.obj = null;
         this.style = {
-            stroke: 'gray',
+            stroke: [0.5, 0.5, 0.5, 1.0],
             fill: null
         };
         this.world.add_shape(this);
@@ -62,13 +62,21 @@
         ctx.lineTo(-sx,  sy);
         ctx.closePath();
         if (this.style.stroke !== null) {
-            ctx.strokeStyle = this.style.stroke;
+            ctx.strokeStyle = this.color_to_css(this.style.stroke);
             ctx.stroke();
         }
         if (this.style.fill !== null) {
-            ctx.fillStyle = this.style.fill;
+            ctx.fillStyle = this.color_to_css(this.style.fill);
             ctx.fill();
         }
         ctx.restore();
+    };
+    
+    proto.color_to_css = function(color) {
+        var r = Math.round(color[0] * 255),
+            g = Math.round(color[1] * 255),
+            b = Math.round(color[2] * 255),
+            a = color[3];
+        return "rgba("+r+","+g+","+b+","+a+")";
     };
 }();
