@@ -1,6 +1,6 @@
 # sidescroller
 
-* point your browser to index.html and play a simple side scrolling shooter!
+* point your browser to [the game](http://payload.github.com/) and play a simple side scrolling shooter!
 * game design is still in progress, but it is allready kind of fun!
 
 ### using
