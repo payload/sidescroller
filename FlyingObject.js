@@ -15,8 +15,9 @@
     };
     
     proto.collide = function(dt, other, coll) {
+        if (this.removed) return false;
         var obj = other.obj;
-        if (obj && 'damage' in obj)
+        if (obj && !obj.removed && 'damage' in obj)
             return this.damage.collide(dt, obj.damage, coll);
         return false;
     };
