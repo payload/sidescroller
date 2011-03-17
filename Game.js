@@ -136,7 +136,7 @@
 
     proto.create_world = function() {
         var field = [0, 0, this.width, this.height],
-            world = new World(field);
+            world = new window.World(field);
         return world;
     };
     
@@ -160,28 +160,15 @@
         for (var i = 0, collision; collision = collisions[i]; i++) {
             chandler(dt, collision);
         }
-        this.world.foreach_timer( function(obj) {
-            if ("step" in obj) obj.step(dt);
-        });
-        this.world.foreach_obj( function(obj) {
-            if ("step" in obj) obj.step(dt);
-        });
+        this.world.step(dt);
     };
     
     proto.draw = function(ctx) {
-        this.world.foreach_obj( function(obj) {
-            if ("draw" in obj) obj.draw();
-        });
-    
+        this.world.draw_objs()
         ctx.save();
-        
         ctx.lineWidth = 2;
         ctx.strokeStyle = "gray";
-        
-        this.world.foreach_shape( function(obj) {
-            if ("draw" in obj) obj.draw(ctx);
-        });
-        
+        this.world.draw_shapes(ctx)
         ctx.restore();
     };
 }();
