@@ -14,8 +14,8 @@ window.onload = ->
         window.onkeyup({which: 16}) if e.button == 0
 
     interval = 30
-    steps = 3
-    dt = interval / steps / 1000
+    dt = 0.01
+    steps = interval / dt / 1000
     setInterval(
         -> mainloop(game, ctx, canvas, dt, steps),
         interval)

@@ -23,8 +23,8 @@
       }
     };
     interval = 30;
-    steps = 3;
-    dt = interval / steps / 1000;
+    dt = 0.01;
+    steps = interval / dt / 1000;
     return setInterval(function() {
       return mainloop(game, ctx, canvas, dt, steps);
     }, interval);
