@@ -10,6 +10,7 @@
         
         this.normsize = null;
         this.shooting = new ShootingModel(world);
+        this.random_movement = false;
         
         var dmg = this.damage,
             that = this;
@@ -83,6 +84,13 @@
     
     var super_step = proto.step;
     proto.step = function(dt) {
+        if (this.random_movement) {
+            if (Math.random() < 0.1) this.move_up = !this.move_up;
+            if (Math.random() < 0.1) this.move_down = !this.move_down;
+            if (Math.random() < 0.1) this.move_left = !this.move_left;
+            if (Math.random() < 0.1) this.move_right = !this.move_right;
+        }
+    
         var polar = b2Vec2.Polar,
             pi = 3.14159,
             velmax = this.movement.vel_max[0],

@@ -101,6 +101,8 @@
             m.pos.Set(x + m.size.x, y);
             m.vel.Set(-100 + 40 * Math.random(), 0);
             m.vel_want.SetV(m.vel);
+            if (Math.random() < 0.5)
+                obj.random_movement = true;
         }
     };
 
