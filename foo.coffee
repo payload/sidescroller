@@ -60,7 +60,7 @@ class KeyBindings
     
     keydown: (key) ->
         k = key.which
-        console.log("keydown", k, k of this.bindings, this.bindings)
+        #console.log("keydown", k)
         if k of this.bindings && !(k of this.active_bindings)
             this.bindings[k].down?()
             this.active_bindings[k] = 

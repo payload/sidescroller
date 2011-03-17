@@ -10,6 +10,7 @@
         this.sprite.obj = this;
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
+        this.removed = false;
         this.world.add_obj(this);
     };
     
@@ -21,6 +22,8 @@
     };
     
     proto.step = function(dt, veladd) {
+        if (this.removed)
+            return this.remove();
         this.movement.step(dt, veladd);
         if (this.remove_when_out_of_sight)
             if (this.out_of_sight())
@@ -30,8 +33,11 @@
     };
     
     proto.remove = function() {
-        this.world.remove_obj(this);
-        this.sprite.remove();
+        if (this.removed) {
+            this.world.remove_obj(this);
+            this.sprite.remove();
+        } else
+            this.removed = true;
     };
     
     proto.out_of_sight = function() {

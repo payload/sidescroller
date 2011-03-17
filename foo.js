@@ -80,7 +80,6 @@
     KeyBindings.prototype.keydown = function(key) {
       var k, _base;
       k = key.which;
-      console.log("keydown", k, k in this.bindings, this.bindings);
       if (k in this.bindings && !(k in this.active_bindings)) {
         if (typeof (_base = this.bindings[k]).down == "function") {
           _base.down();
