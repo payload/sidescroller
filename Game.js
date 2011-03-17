@@ -16,7 +16,7 @@
 
     proto.disable_player_bindings = function() {
         var that = this;
-        [87, 65, 83, 68, 16].forEach(function(x){
+        [87, 65, 83, 68, 16, 72, 74, 75, 76].forEach(function(x){
             that.bindings.disable(x);
         });
     };
@@ -30,26 +30,35 @@
             null,
             function() { that.switch_pause() },
             null);
-        // W
-        bindings.enable(87,
+
+        var up = [
             function(dt){player.move_up_on(dt)},
             function(dt){player.move_up_off(dt)},
-            null);
-        // A
-        bindings.enable(65,
+            null];
+        var left = [
             function(dt){player.move_left_on(dt)}, 
             function(dt){player.move_left_off(dt)},
-            null);
-        // S
-        bindings.enable(83,
+            null];
+        var down = [
             function(dt){player.move_down_on(dt)}, 
             function(dt){player.move_down_off(dt)},
-            null);
-        // D
-        bindings.enable(68,
+            null];
+        var right = [
             function(dt){player.move_right_on(dt)}, 
             function(dt){player.move_right_off(dt)},
-            null);
+            null];
+        // W, K
+        bindings.enable.apply(bindings, [87].concat(up));
+        bindings.enable.apply(bindings, [75].concat(up));
+        // A, H
+        bindings.enable.apply(bindings, [65].concat(left));
+        bindings.enable.apply(bindings, [72].concat(left));
+        // S, J
+        bindings.enable.apply(bindings, [83].concat(down));
+        bindings.enable.apply(bindings, [74].concat(down));
+        // D, L
+        bindings.enable.apply(bindings, [68].concat(right));
+        bindings.enable.apply(bindings, [76].concat(right));
         // Shift
         bindings.enable(16,
             function(){player.shoot_on()},
