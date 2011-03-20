@@ -9,7 +9,7 @@
         this.move_right = false;
         
         this.normsize = null;
-        this.shooting = new ShootingModel(world);
+        this.shooting = new window.ShootingModel(world);
         this.random_movement = false;
         
         var dmg = this.damage,
