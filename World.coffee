@@ -1,9 +1,9 @@
 window.World = class World
     constructor: (@field) ->
-         @objs = []
-         @shapes = []
-         @timers = []
-         @collide =
+        @objs = []
+        @shapes = []
+        @timers = []
+        @collide =
             rect_rect: @collision_rect_rect
             
     in_field: (vec) ->
@@ -31,7 +31,7 @@ window.World = class World
         collide = @collide
         shapes = @shapes
         collisions = []
-        for i in [0...shapes.length-1]
+        for i in [0...shapes.length]
             for j in [i+1...shapes.length]
                 a = shapes[i]
                 b = shapes[j]

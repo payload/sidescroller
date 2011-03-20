@@ -40,7 +40,7 @@
       collide = this.collide;
       shapes = this.shapes;
       collisions = [];
-      for (i = 0, _ref = shapes.length - 1; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
+      for (i = 0, _ref = shapes.length; (0 <= _ref ? i < _ref : i > _ref); (0 <= _ref ? i += 1 : i -= 1)) {
         for (j = _ref2 = i + 1, _ref3 = shapes.length; (_ref2 <= _ref3 ? j < _ref3 : j > _ref3); (_ref2 <= _ref3 ? j += 1 : j -= 1)) {
           a = shapes[i];
           b = shapes[j];
