@@ -5,7 +5,7 @@
     proto.init = function(world) {
         this.world = world;
         this.movement = new MovementModel();
-        this.damage = new DamageModel();
+        this.damage = new window.DamageModel();
         this.sprite = new window.Rectangle(world, this);
         this.keep_in_field = false;
         this.remove_when_out_of_sight = true;
