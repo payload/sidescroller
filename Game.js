@@ -11,6 +11,7 @@
       this.player = this.create_player();
       this.create_spawner();
       this.pause = false;
+      this.game_over = false;
       this.set_bindings();
     }
     Game.prototype.disable_player_bindings = function() {
@@ -129,7 +130,7 @@
       return _results;
     };
     Game.prototype.create_player = function() {
-      var height, player, width, world, x, y;
+      var die, height, player, width, world, x, y;
       world = this.world;
       width = this.width;
       height = this.height;
@@ -145,6 +146,11 @@
       player.shooting.shell_group = "player";
       player.movement.pos.Set(x, y);
       player.show_energy = true;
+      die = player.damage.die;
+      player.damage.die = __bind(function(other) {
+        die(other);
+        return this.game_over = true;
+      }, this);
       return player;
     };
     Game.prototype.create_world = function() {
@@ -182,8 +188,17 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = "gray";
       this.world.draw_shapes(ctx);
-      score = "" + this.world.score + " points";
+      score = this.world.score;
+      score = score === 1 ? "" + score + " point" : "" + score + " points";
+      ctx.font = "1em VT323";
       ctx.fillText(score, 10, 15);
+      if (this.game_over) {
+        ctx.font = "5em VT323";
+        ctx.textAlign = "center";
+        ctx.fillText("GAME OVER", 320, 240);
+        ctx.font = "1em VT323";
+        ctx.fillText("Reload with F5 or Ctrl+R to play it again!", 320, 262);
+      }
       return ctx.restore();
     };
     return Game;

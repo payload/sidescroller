@@ -6,6 +6,7 @@ window.Game = class Game
         this.player = this.create_player()
         this.create_spawner()
         this.pause = false
+        this.game_over = false
         this.set_bindings()
 
     disable_player_bindings: ->
@@ -112,6 +113,10 @@ window.Game = class Game
         player.shooting.shell_group = "player"
         player.movement.pos.Set(x, y)
         player.show_energy = true
+        die = player.damage.die
+        player.damage.die = (other) =>
+            die(other)
+            @game_over = true
         player
 
     create_world: ->
@@ -136,8 +141,16 @@ window.Game = class Game
         ctx.lineWidth = 2
         ctx.strokeStyle = "gray"
         this.world.draw_shapes(ctx)
-        score = "#{@world.score} points"
+        score = @world.score
+        score = if score == 1 then "#{score} point" else "#{score} points"
+        ctx.font = "1em VT323"
         ctx.fillText(score, 10, 15)
+        if @game_over
+            ctx.font = "5em VT323"
+            ctx.textAlign = "center"
+            ctx.fillText("GAME OVER", 320, 240)
+            ctx.font = "1em VT323"
+            ctx.fillText("Reload with F5 or Ctrl+R to play it again!", 320, 262)
         ctx.restore()
 
 

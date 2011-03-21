@@ -8,7 +8,7 @@ window.Rectangle = class Rectangle
         @obj or= null
         @style =
             stroke: [0.5, 0.5, 0.5, 1.0]
-            fill: null
+            fill: [0.88, 0.88, 0.88, 1.0]
         @world.add_shape(this)
 
     remove: ->
@@ -30,12 +30,12 @@ window.Rectangle = class Rectangle
         ctx.lineTo( sx,  sy)
         ctx.lineTo(-sx,  sy)
         ctx.closePath()
-        if @style.stroke != null
-            ctx.strokeStyle = @color_to_css(@style.stroke)
-            ctx.stroke()
         if @style.fill != null
             ctx.fillStyle = @color_to_css(@style.fill)
             ctx.fill()
+        if @style.stroke != null
+            ctx.strokeStyle = @color_to_css(@style.stroke)
+            ctx.stroke()
         ctx.restore()
     
     color_to_css: (color) ->

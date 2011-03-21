@@ -13,7 +13,7 @@
       this.obj || (this.obj = null);
       this.style = {
         stroke: [0.5, 0.5, 0.5, 1.0],
-        fill: null
+        fill: [0.88, 0.88, 0.88, 1.0]
       };
       this.world.add_shape(this);
     }
@@ -37,13 +37,13 @@
       ctx.lineTo(sx, sy);
       ctx.lineTo(-sx, sy);
       ctx.closePath();
-      if (this.style.stroke !== null) {
-        ctx.strokeStyle = this.color_to_css(this.style.stroke);
-        ctx.stroke();
-      }
       if (this.style.fill !== null) {
         ctx.fillStyle = this.color_to_css(this.style.fill);
         ctx.fill();
+      }
+      if (this.style.stroke !== null) {
+        ctx.strokeStyle = this.color_to_css(this.style.stroke);
+        ctx.stroke();
       }
       return ctx.restore();
     };
