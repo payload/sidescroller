@@ -1,5 +1,9 @@
-all: $(patsubst %.coffee, %.js, $(wildcard *.coffee))
+all: $(patsubst %.coffee, %-compile, $(wildcard *.coffee))
 
-%.js: %.coffee
+clean: $(patsubst %.coffee, %-clean, $(wildcard *.coffee))
+
+%-compile: %.coffee
 	coffee -c $<
 
+%-clean: %.js
+	rm $<
