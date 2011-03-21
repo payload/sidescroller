@@ -28,7 +28,7 @@
       var g, _i, _len;
       for (_i = 0, _len = a.length; _i < _len; _i++) {
         g = a[_i];
-        if (__indexOf.call(g, b) >= 0) {
+        if (__indexOf.call(b, g) >= 0) {
           return true;
         }
       }

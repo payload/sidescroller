@@ -17,7 +17,7 @@ window.DamageModel = class DamageModel
     
     check_group: (a, b) ->
         for g in a
-            return true if b in g
+            return true if g in b
         false
     
     apply_damage: (dt, dmg, to_apply) ->

@@ -3,7 +3,7 @@ window.onload = ->
     ctx = canvas.getContext("2d")
     
     window.keybindings = new KeyBindings()
-    game = new this.Game(canvas, window.keybindings)
+    game = new window.Game(canvas, window.keybindings)
     
     canvas.onmousemove = (e) ->
     
