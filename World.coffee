@@ -5,6 +5,10 @@ window.World = class World
         @timers = []
         @collide =
             rect_rect: @collision_rect_rect
+        @score = 0
+            
+    inc_score: ->
+        @score += 1
             
     in_field: (vec) ->
         f = @field

@@ -176,11 +176,14 @@
       return this.world.step(dt);
     };
     Game.prototype.draw = function(ctx) {
+      var score;
       this.world.draw_objs();
       ctx.save();
       ctx.lineWidth = 2;
       ctx.strokeStyle = "gray";
       this.world.draw_shapes(ctx);
+      score = "" + this.world.score + " points";
+      ctx.fillText(score, 10, 15);
       return ctx.restore();
     };
     return Game;

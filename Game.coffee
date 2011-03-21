@@ -136,6 +136,8 @@ window.Game = class Game
         ctx.lineWidth = 2
         ctx.strokeStyle = "gray"
         this.world.draw_shapes(ctx)
+        score = "#{@world.score} points"
+        ctx.fillText(score, 10, 15)
         ctx.restore()
 
 

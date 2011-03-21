@@ -9,7 +9,11 @@
       this.collide = {
         rect_rect: this.collision_rect_rect
       };
+      this.score = 0;
     }
+    World.prototype.inc_score = function() {
+      return this.score += 1;
+    };
     World.prototype.in_field = function(vec) {
       var f;
       f = this.field;
