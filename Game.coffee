@@ -78,7 +78,7 @@ window.Game = class Game
             obj.movement.pos.Set(x, y)
     
     create_spawner: ->
-        t = new Timer(this.world, 0.4, =>
+        t = new window.Timer(this.world, 0.4, =>
             if (Math.random() < 0.2)
                 this.create_some_enemies(1 + 2 * Math.random())
             if (Math.random() < 0.3)

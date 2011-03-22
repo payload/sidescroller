@@ -104,7 +104,7 @@
     };
     Game.prototype.create_spawner = function() {
       var t;
-      return t = new Timer(this.world, 0.4, __bind(function() {
+      return t = new window.Timer(this.world, 0.4, __bind(function() {
         if (Math.random() < 0.2) {
           this.create_some_enemies(1 + 2 * Math.random());
         }
