@@ -7,22 +7,27 @@ window.Game = class Game
         this.create_spawner()
         this.pause = false
         this.game_over = false
+        @keys =
+            up: [87, 75, 38]
+            left: [65, 72, 37]
+            down: [83, 74, 40]
+            right: [68, 76, 39]
+            shoot: [16, 32]
+            pause: [80]
         this.set_bindings()
 
     disable_player_bindings: ->
-        for x in [87, 65, 83, 68, 16, 72, 74, 75, 76, 37, 38, 39, 40]
-            this.bindings.disable(x)
+        keys = @keys
+        all_keys = []
+        all_keys = all_keys.concat(action) for action in keys
+        this.bindings.disable(x) for k in all_keys
 
     set_bindings: ->
         that = this
         bindings = this.bindings
         player = this.player
-        # P
-        bindings.enable(80,
-            null,
-            -> that.switch_pause(),
-            null)
-
+        keys = @keys
+        
         up = [
             (dt) -> player.move_up_on(dt),
             (dt) -> player.move_up_off(dt),
@@ -39,27 +44,31 @@ window.Game = class Game
             (dt) -> player.move_right_on(dt), 
             (dt) -> player.move_right_off(dt),
             null]
-        # W, K
-        bindings.enable.apply(bindings, [87].concat(up))
-        bindings.enable.apply(bindings, [75].concat(up))
-        bindings.enable.apply(bindings, [38].concat(up))
-        # A, H
-        bindings.enable.apply(bindings, [65].concat(left))
-        bindings.enable.apply(bindings, [72].concat(left))
-        bindings.enable.apply(bindings, [37].concat(left))
-        # S, J
-        bindings.enable.apply(bindings, [83].concat(down))
-        bindings.enable.apply(bindings, [74].concat(down))
-        bindings.enable.apply(bindings, [40].concat(down))
-        # D, L
-        bindings.enable.apply(bindings, [68].concat(right))
-        bindings.enable.apply(bindings, [76].concat(right))
-        bindings.enable.apply(bindings, [39].concat(right))
-        # Shift
-        bindings.enable(16,
-            -> player.shoot_on(),
-            -> player.shoot_off(),
-            (dt) -> player.shoot(dt))
+        
+        # P
+        for k in keys.pause
+            bindings.enable(k,
+                null,
+                -> that.switch_pause(),
+                null)
+        # W, K, ↑
+        for k in keys.up
+            bindings.enable.apply(bindings, [k].concat(up))
+        # A, H, ←
+        for k in keys.left
+            bindings.enable.apply(bindings, [k].concat(left))
+        # S, J, ↓
+        for k in keys.down
+            bindings.enable.apply(bindings, [k].concat(down))
+        # D, L, →
+        for k in keys.right
+            bindings.enable.apply(bindings, [k].concat(right))
+        # Shift, Space
+        for k in keys.shoot
+            bindings.enable(k,
+                -> player.shoot_on(),
+                -> player.shoot_off(),
+                (dt) -> player.shoot(dt))
 
     switch_pause: ->
         this.pause = !this.pause

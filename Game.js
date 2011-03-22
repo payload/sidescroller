@@ -12,26 +12,37 @@
       this.create_spawner();
       this.pause = false;
       this.game_over = false;
+      this.keys = {
+        up: [87, 75, 38],
+        left: [65, 72, 37],
+        down: [83, 74, 40],
+        right: [68, 76, 39],
+        shoot: [16, 32],
+        pause: [80]
+      };
       this.set_bindings();
     }
     Game.prototype.disable_player_bindings = function() {
-      var x, _i, _len, _ref, _results;
-      _ref = [87, 65, 83, 68, 16, 72, 74, 75, 76, 37, 38, 39, 40];
+      var action, all_keys, k, keys, _i, _j, _len, _len2, _results;
+      keys = this.keys;
+      all_keys = [];
+      for (_i = 0, _len = keys.length; _i < _len; _i++) {
+        action = keys[_i];
+        all_keys = all_keys.concat(action);
+      }
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        x = _ref[_i];
+      for (_j = 0, _len2 = all_keys.length; _j < _len2; _j++) {
+        k = all_keys[_j];
         _results.push(this.bindings.disable(x));
       }
       return _results;
     };
     Game.prototype.set_bindings = function() {
-      var bindings, down, left, player, right, that, up;
+      var bindings, down, k, keys, left, player, right, that, up, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _m, _n, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _results;
       that = this;
       bindings = this.bindings;
       player = this.player;
-      bindings.enable(80, null, function() {
-        return that.switch_pause();
-      }, null);
+      keys = this.keys;
       up = [
         function(dt) {
           return player.move_up_on(dt);
@@ -60,25 +71,46 @@
           return player.move_right_off(dt);
         }, null
       ];
-      bindings.enable.apply(bindings, [87].concat(up));
-      bindings.enable.apply(bindings, [75].concat(up));
-      bindings.enable.apply(bindings, [38].concat(up));
-      bindings.enable.apply(bindings, [65].concat(left));
-      bindings.enable.apply(bindings, [72].concat(left));
-      bindings.enable.apply(bindings, [37].concat(left));
-      bindings.enable.apply(bindings, [83].concat(down));
-      bindings.enable.apply(bindings, [74].concat(down));
-      bindings.enable.apply(bindings, [40].concat(down));
-      bindings.enable.apply(bindings, [68].concat(right));
-      bindings.enable.apply(bindings, [76].concat(right));
-      bindings.enable.apply(bindings, [39].concat(right));
-      return bindings.enable(16, function() {
-        return player.shoot_on();
-      }, function() {
-        return player.shoot_off();
-      }, function(dt) {
-        return player.shoot(dt);
-      });
+      _ref = keys.pause;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        k = _ref[_i];
+        bindings.enable(k, null, function() {
+          return that.switch_pause();
+        }, null);
+      }
+      _ref2 = keys.up;
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        k = _ref2[_j];
+        bindings.enable.apply(bindings, [k].concat(up));
+      }
+      _ref3 = keys.left;
+      for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+        k = _ref3[_k];
+        bindings.enable.apply(bindings, [k].concat(left));
+      }
+      _ref4 = keys.down;
+      for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
+        k = _ref4[_l];
+        bindings.enable.apply(bindings, [k].concat(down));
+      }
+      _ref5 = keys.right;
+      for (_m = 0, _len5 = _ref5.length; _m < _len5; _m++) {
+        k = _ref5[_m];
+        bindings.enable.apply(bindings, [k].concat(right));
+      }
+      _ref6 = keys.shoot;
+      _results = [];
+      for (_n = 0, _len6 = _ref6.length; _n < _len6; _n++) {
+        k = _ref6[_n];
+        _results.push(bindings.enable(k, function() {
+          return player.shoot_on();
+        }, function() {
+          return player.shoot_off();
+        }, function(dt) {
+          return player.shoot(dt);
+        }));
+      }
+      return _results;
     };
     Game.prototype.switch_pause = function() {
       this.pause = !this.pause;
