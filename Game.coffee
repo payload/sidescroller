@@ -10,7 +10,7 @@ window.Game = class Game
         this.set_bindings()
 
     disable_player_bindings: ->
-        for x in [87, 65, 83, 68, 16, 72, 74, 75, 76]
+        for x in [87, 65, 83, 68, 16, 72, 74, 75, 76, 37, 38, 39, 40]
             this.bindings.disable(x)
 
     set_bindings: ->
@@ -42,15 +42,19 @@ window.Game = class Game
         # W, K
         bindings.enable.apply(bindings, [87].concat(up))
         bindings.enable.apply(bindings, [75].concat(up))
+        bindings.enable.apply(bindings, [38].concat(up))
         # A, H
         bindings.enable.apply(bindings, [65].concat(left))
         bindings.enable.apply(bindings, [72].concat(left))
+        bindings.enable.apply(bindings, [37].concat(left))
         # S, J
         bindings.enable.apply(bindings, [83].concat(down))
         bindings.enable.apply(bindings, [74].concat(down))
+        bindings.enable.apply(bindings, [40].concat(down))
         # D, L
         bindings.enable.apply(bindings, [68].concat(right))
         bindings.enable.apply(bindings, [76].concat(right))
+        bindings.enable.apply(bindings, [39].concat(right))
         # Shift
         bindings.enable(16,
             -> player.shoot_on(),

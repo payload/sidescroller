@@ -16,7 +16,7 @@
     }
     Game.prototype.disable_player_bindings = function() {
       var x, _i, _len, _ref, _results;
-      _ref = [87, 65, 83, 68, 16, 72, 74, 75, 76];
+      _ref = [87, 65, 83, 68, 16, 72, 74, 75, 76, 37, 38, 39, 40];
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         x = _ref[_i];
@@ -62,12 +62,16 @@
       ];
       bindings.enable.apply(bindings, [87].concat(up));
       bindings.enable.apply(bindings, [75].concat(up));
+      bindings.enable.apply(bindings, [38].concat(up));
       bindings.enable.apply(bindings, [65].concat(left));
       bindings.enable.apply(bindings, [72].concat(left));
+      bindings.enable.apply(bindings, [37].concat(left));
       bindings.enable.apply(bindings, [83].concat(down));
       bindings.enable.apply(bindings, [74].concat(down));
+      bindings.enable.apply(bindings, [40].concat(down));
       bindings.enable.apply(bindings, [68].concat(right));
       bindings.enable.apply(bindings, [76].concat(right));
+      bindings.enable.apply(bindings, [39].concat(right));
       return bindings.enable(16, function() {
         return player.shoot_on();
       }, function() {
