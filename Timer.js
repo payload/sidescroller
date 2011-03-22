@@ -1,39 +1,42 @@
-+function(){
-    this.Timer = function(world, interval, callback){
-        this.interval = interval === undefined ? 1 : interval;
-        this.running = true;
-        this.accum = 0;
-        this.callback = callback || null;
-        world.add_timer(this);
-    };   
-    var proto = Timer.prototype;
-    
-    proto.start = function() {
-        this.running = true;
+(function() {
+  var Timer;
+  window.Timer = Timer = (function() {
+    function Timer(world, interval, callback) {
+      this.world = world;
+      this.interval = interval;
+      this.callback = callback;
+      this.interval || (this.interval = 1);
+      this.callback || (this.callback = null);
+      this.running = true;
+      this.accum = 0;
+      this.world.add_timer(this);
+    }
+    Timer.prototype.start = function() {
+      return this.running = true;
     };
-    
-    proto.stop = function() {
-        this.running = false;
-        this.accum = 0;
+    Timer.prototype.pause = function() {
+      return this.running = false;
     };
-    
-    proto.pause = function() {
-        this.running = false;
+    Timer.prototype.stop = function() {
+      this.running = false;
+      return this.accum = 0;
     };
-    
-    proto.restart = function() {
-        this.running = true;
-        this.accum = 0;
+    Timer.prototype.restart = function() {
+      this.running = true;
+      return this.accum = 0;
     };
-    
-    proto.step = function(dt) {
-        if (!this.running) return;
-        this.accum += dt;
-        if (this.accum >= this.interval) {
-            while (this.accum >= this.interval)
-                this.accum = this.interval - this.accum;
-            if (this.callback)
-                this.callback();
+    Timer.prototype.step = function(dt) {
+      if (!this.running) {
+        return;
+      }
+      this.accum += dt;
+      if (this.accum >= this.interval) {
+        while (this.accum >= this.interval) {
+          this.accum = this.interval - this.accum;
         }
+        return typeof this.callback == "function" ? this.callback() : void 0;
+      }
     };
-}();
+    return Timer;
+  })();
+}).call(this);
