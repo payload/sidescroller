@@ -23,7 +23,7 @@ window.Shell = class Shell extends FlyingObject
             
 
     remove: (player_hits_enemy) ->
-        if not player_hits_enemy and 'player' in @damage.groups
+        if player_hits_enemy != true and 'player' in @damage.groups
             @world.shell_miss() 
         super()
         

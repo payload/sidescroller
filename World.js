@@ -28,7 +28,7 @@
       return this.score += 1;
     };
     World.prototype.shell_miss = function() {
-      return this.score -= 1 / 8;
+      return this.score -= 1 / 4;
     };
     World.prototype.in_field = function(vec) {
       var f;

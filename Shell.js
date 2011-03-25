@@ -50,7 +50,7 @@
       }
     }
     Shell.prototype.remove = function(player_hits_enemy) {
-      if (!player_hits_enemy && __indexOf.call(this.damage.groups, 'player') >= 0) {
+      if (player_hits_enemy !== true && __indexOf.call(this.damage.groups, 'player') >= 0) {
         this.world.shell_miss();
       }
       return Shell.__super__.remove.call(this);

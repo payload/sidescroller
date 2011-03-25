@@ -18,7 +18,7 @@ window.World = class World
         @score += 1
         
     shell_miss: ->
-        @score -= 1/8
+        @score -= 1/4
             
     in_field: (vec) ->
         f = @field
