@@ -14,6 +14,9 @@
     World.prototype.inc_score = function() {
       return this.score += 1;
     };
+    World.prototype.shell_miss = function() {
+      return this.score -= 1 / 8;
+    };
     World.prototype.in_field = function(vec) {
       var f;
       f = this.field;

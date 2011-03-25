@@ -154,7 +154,7 @@ window.Game = class Game
         ctx.lineWidth = 2
         ctx.strokeStyle = "gray"
         this.world.draw_shapes(ctx)
-        score = @world.score
+        score = Math.round(@world.score)
         score = if score == 1 then "#{score} point" else "#{score} points"
         ctx.font = "1em VT323"
         ctx.fillText(score, 10, 15)

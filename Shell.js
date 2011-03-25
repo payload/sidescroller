@@ -27,10 +27,16 @@
         if (player_hits_enemy) {
           that.world.inc_score();
         }
-        that.remove();
+        that.remove(player_hits_enemy);
         return this.explode(other, 1);
       };
     }
+    Shell.prototype.remove = function(player_hits_enemy) {
+      if (!player_hits_enemy && __indexOf.call(this.damage.groups, 'player') >= 0) {
+        this.world.shell_miss();
+      }
+      return Shell.__super__.remove.call(this);
+    };
     return Shell;
   })();
 }).call(this);

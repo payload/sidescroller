@@ -224,7 +224,7 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = "gray";
       this.world.draw_shapes(ctx);
-      score = this.world.score;
+      score = Math.round(this.world.score);
       score = score === 1 ? "" + score + " point" : "" + score + " points";
       ctx.font = "1em VT323";
       ctx.fillText(score, 10, 15);
