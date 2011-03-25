@@ -1,37 +1,51 @@
 <!DOCTYPE HTML>
-<link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+<html>
+<head>
 <script type="text/javascript" src="main.js"></script>
-<body style="
+<style type="text/css">
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: normal;
+  src: local('VT323'), url('VT323.woff') format('woff');
+}
+body {
     width:100%;
     margin:0;
-    font-family:VT323">
-
-<div style="
-    text-align:center;
-    display:block;
-    margin:auto;
-    max-width:640px">
-
-<h1 style="font-size:1.2em">sidescroller</h1>
-
-Move with the cursor keys, WASD or HJKL. Shoot via Shift, Space or&nbsp;left&nbsp;mouse&nbsp;button. Pause&nbsp;with&nbsp;P.
-
-<canvas id="canvas" width="640" height="480"
-    style="
+    font-family:VT323;
+}
+canvas {
     margin:auto;
     display:block;
     background-color:rgb(88%,88%,88%);
-    border:1px solid gray"></canvas>
-    
-Watch also my
-    <a href="https://github.com/payload/sidescroller/">github account</a>
-there you can also use the
-    <a href="https://github.com/payload/sidescroller/issues">issue tracker</a>
-to spam me with your ruthless wishes.
-Or blame me on my
-    <a href="http://payload-bay.de">identi.ca account</a>.
-    
+    border:1px solid gray;
+}
+h1 {
+    font-size:1.2em;
+}
+div {
+    text-align:center;
+    display:block;
+    margin:auto;
+    max-width:640px;
+}
+</style>
+</head>
+<body>
+<div>
+    <h1>sidescroller</h1>
+
+    Move with the cursor keys, WASD or HJKL. Shoot via Shift, Space or&nbsp;left&nbsp;mouse&nbsp;button. Pause&nbsp;with&nbsp;P.
+
+    <canvas id="canvas" width="640" height="480"></canvas>
+        
+    Watch also my
+        <a href="https://github.com/payload/sidescroller/">github account</a>
+    there you can also use the
+        <a href="https://github.com/payload/sidescroller/issues">issue tracker</a>
+    to spam me with your ruthless wishes.
+    Or blame me on my
+        <a href="http://payload-bay.de">identi.ca account</a>.
 </div>
-    
 </body>
+</html>
