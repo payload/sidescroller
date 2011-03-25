@@ -18,7 +18,8 @@
         down: [83, 74, 40],
         right: [68, 76, 39],
         shoot: [16, 32],
-        pause: [80]
+        pause: [80],
+        mute: [77]
       };
       this.set_bindings();
     }
@@ -38,7 +39,7 @@
       return _results;
     };
     Game.prototype.set_bindings = function() {
-      var bindings, down, k, keys, left, player, right, that, up, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _m, _n, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _results;
+      var bindings, down, k, keys, left, player, right, that, up, _i, _j, _k, _l, _len, _len2, _len3, _len4, _len5, _len6, _len7, _m, _n, _o, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _results;
       that = this;
       bindings = this.bindings;
       player = this.player;
@@ -71,37 +72,44 @@
           return player.move_right_off(dt);
         }, null
       ];
-      _ref = keys.pause;
+      _ref = keys.mute;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         k = _ref[_i];
+        bindings.enable(k, null, __bind(function() {
+          return this.world.switch_mute();
+        }, this), null);
+      }
+      _ref2 = keys.pause;
+      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+        k = _ref2[_j];
         bindings.enable(k, null, function() {
           return that.switch_pause();
         }, null);
       }
-      _ref2 = keys.up;
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        k = _ref2[_j];
-        bindings.enable.apply(bindings, [k].concat(up));
-      }
-      _ref3 = keys.left;
+      _ref3 = keys.up;
       for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
         k = _ref3[_k];
-        bindings.enable.apply(bindings, [k].concat(left));
+        bindings.enable.apply(bindings, [k].concat(up));
       }
-      _ref4 = keys.down;
+      _ref4 = keys.left;
       for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
         k = _ref4[_l];
-        bindings.enable.apply(bindings, [k].concat(down));
+        bindings.enable.apply(bindings, [k].concat(left));
       }
-      _ref5 = keys.right;
+      _ref5 = keys.down;
       for (_m = 0, _len5 = _ref5.length; _m < _len5; _m++) {
         k = _ref5[_m];
-        bindings.enable.apply(bindings, [k].concat(right));
+        bindings.enable.apply(bindings, [k].concat(down));
       }
-      _ref6 = keys.shoot;
-      _results = [];
+      _ref6 = keys.right;
       for (_n = 0, _len6 = _ref6.length; _n < _len6; _n++) {
         k = _ref6[_n];
+        bindings.enable.apply(bindings, [k].concat(right));
+      }
+      _ref7 = keys.shoot;
+      _results = [];
+      for (_o = 0, _len7 = _ref7.length; _o < _len7; _o++) {
+        k = _ref7[_o];
         _results.push(bindings.enable(k, function() {
           return player.shoot_on();
         }, function() {

@@ -6,6 +6,13 @@ window.World = class World
         @collide =
             rect_rect: @collision_rect_rect
         @score = 0
+        @laser_sounds = []
+        @laser_sound = 0
+            
+    switch_mute: ->
+        @laser_sounds = if @laser_sounds.length == 0
+        then (new Audio('laser.ogg') for x in [0...10])
+        else []
             
     inc_score: ->
         @score += 1

@@ -10,7 +10,20 @@
         rect_rect: this.collision_rect_rect
       };
       this.score = 0;
+      this.laser_sounds = [];
+      this.laser_sound = 0;
     }
+    World.prototype.switch_mute = function() {
+      var x;
+      return this.laser_sounds = this.laser_sounds.length === 0 ? (function() {
+        var _results;
+        _results = [];
+        for (x = 0; x < 10; x++) {
+          _results.push(new Audio('laser.ogg'));
+        }
+        return _results;
+      })() : [];
+    };
     World.prototype.inc_score = function() {
       return this.score += 1;
     };

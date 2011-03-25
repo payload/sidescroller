@@ -14,6 +14,7 @@ window.Game = class Game
             right: [68, 76, 39]
             shoot: [16, 32]
             pause: [80]
+            mute: [77]
         this.set_bindings()
 
     disable_player_bindings: ->
@@ -45,6 +46,12 @@ window.Game = class Game
             (dt) -> player.move_right_off(dt),
             null]
         
+        # M
+        for k in keys.mute
+            bindings.enable(k,
+                null,
+                => @world.switch_mute(),
+                null)
         # P
         for k in keys.pause
             bindings.enable(k,

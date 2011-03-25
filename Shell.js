@@ -16,7 +16,7 @@
   window.Shell = Shell = (function() {
     __extends(Shell, FlyingObject);
     function Shell(world) {
-      var that;
+      var i, snd, that;
       this.world = world;
       this.init(world);
       this.movement.size.Set(5, 5);
@@ -30,6 +30,24 @@
         that.remove(player_hits_enemy);
         return this.explode(other, 1);
       };
+      if (this.world.laser_sounds.length > 0) {
+        i = this.world.laser_sound;
+        while (true) {
+          snd = this.world.laser_sounds[this.world.laser_sound];
+          this.world.laser_sound = (this.world.laser_sound + 1) % this.world.laser_sounds.length;
+          if (snd.ended || snd.paused) {
+            if (snd.currentTime !== 0) {
+              snd.currentTime = 0;
+            }
+            snd.play();
+            break;
+          }
+          if (this.world.laser_sound === i) {
+            console.log(snd.duration, snd.currentTime, snd.paused, snd.ended);
+            break;
+          }
+        }
+      }
     }
     Shell.prototype.remove = function(player_hits_enemy) {
       if (!player_hits_enemy && __indexOf.call(this.damage.groups, 'player') >= 0) {

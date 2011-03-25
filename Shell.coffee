@@ -8,6 +8,19 @@ window.Shell = class Shell extends FlyingObject
             that.world.inc_score() if player_hits_enemy
             that.remove(player_hits_enemy)
             this.explode(other, 1)
+        if @world.laser_sounds.length > 0
+            i = @world.laser_sound
+            while true
+                snd = @world.laser_sounds[@world.laser_sound]
+                @world.laser_sound = (@world.laser_sound + 1) % @world.laser_sounds.length
+                if snd.ended or snd.paused
+                    snd.currentTime = 0 if snd.currentTime != 0
+                    snd.play()
+                    break
+                if @world.laser_sound == i
+                    console.log(snd.duration, snd.currentTime, snd.paused, snd.ended)
+                    break
+            
 
     remove: (player_hits_enemy) ->
         if not player_hits_enemy and 'player' in @damage.groups
