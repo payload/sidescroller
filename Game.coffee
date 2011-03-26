@@ -23,12 +23,12 @@ window.Game = class Game
         all_keys = all_keys.concat(action) for action in keys
         this.bindings.disable(x) for k in all_keys
 
+    enable_binding: (keys, action) ->
+        @bindings.enable.apply(@bindings, [k].concat(action)) for k in keys
+
     set_bindings: ->
-        that = this
-        bindings = this.bindings
-        player = this.player
+        player = @player
         keys = @keys
-        
         up = [
             (dt) -> player.move_up_on(dt),
             (dt) -> player.move_up_off(dt),
@@ -45,37 +45,25 @@ window.Game = class Game
             (dt) -> player.move_right_on(dt), 
             (dt) -> player.move_right_off(dt),
             null]
-        
-        # M
-        for k in keys.mute
-            bindings.enable(k,
-                null,
-                => @world.switch_mute(),
-                null)
-        # P
-        for k in keys.pause
-            bindings.enable(k,
-                null,
-                -> that.switch_pause(),
-                null)
-        # W, K, ↑
-        for k in keys.up
-            bindings.enable.apply(bindings, [k].concat(up))
-        # A, H, ←
-        for k in keys.left
-            bindings.enable.apply(bindings, [k].concat(left))
-        # S, J, ↓
-        for k in keys.down
-            bindings.enable.apply(bindings, [k].concat(down))
-        # D, L, →
-        for k in keys.right
-            bindings.enable.apply(bindings, [k].concat(right))
-        # Shift, Space
-        for k in keys.shoot
-            bindings.enable(k,
-                -> player.shoot_on(),
-                -> player.shoot_off(),
-                (dt) -> player.shoot(dt))
+        shoot = [
+            -> player.shoot_on(),
+            -> player.shoot_off(),
+            (dt) -> player.shoot(dt)]
+        pause = [
+            null,
+            => @switch_pause(),
+            null]
+        mute = [
+            null,
+            => @world.switch_mute(),
+            null]
+        @enable_binding(keys.mute, mute) # M
+        @enable_binding(keys.pause, pause) # P
+        @enable_binding(keys.up, up) # W, K, ↑
+        @enable_binding(keys.left, left) # A, H, ←
+        @enable_binding(keys.down, down) # S, J, ↓
+        @enable_binding(keys.right, right) # D, L, →
+        @enable_binding(keys.shoot, shoot) # Shift, Space
 
     switch_pause: ->
         this.pause = !this.pause
