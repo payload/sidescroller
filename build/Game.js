@@ -223,11 +223,10 @@
       ctx.font = "1em VT323";
       ctx.fillText(score, 10, 15);
       if (this.game_over) {
-        ctx.font = "5em VT323";
         ctx.textAlign = "center";
-        ctx.fillText("GAME OVER", 320, 240);
-        ctx.font = "1em VT323";
         ctx.fillText("Reload with F5 or Ctrl+R to play it again!", 320, 262);
+        ctx.font = "5em VT323";
+        ctx.fillText("GAME OVER", 320, 240);
       }
       return ctx.restore();
     };
