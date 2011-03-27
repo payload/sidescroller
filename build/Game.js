@@ -130,7 +130,7 @@
     };
     Game.prototype.create_spawner = function() {
       var t;
-      return t = new window.Timer(this.world, 0.4, __bind(function() {
+      return t = new Timer(this.world, 0.4, __bind(function() {
         if (Math.random() < 0.2) {
           this.create_some_enemies(1 + 2 * Math.random());
         }
@@ -186,7 +186,7 @@
     Game.prototype.create_world = function() {
       var field, world;
       field = [0, 0, this.width, this.height];
-      world = new window.World(field);
+      world = new World(field);
       return world;
     };
     Game.prototype.collision_handler = function(dt, coll) {

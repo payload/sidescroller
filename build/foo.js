@@ -6,7 +6,7 @@
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
     window.keybindings = new KeyBindings();
-    game = new window.Game(canvas, window.keybindings);
+    game = new Game(canvas, window.keybindings);
     canvas.onmousemove = function(e) {};
     canvas.onmousedown = function(e) {
       if (e.button === 0) {

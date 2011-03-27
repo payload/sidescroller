@@ -82,7 +82,7 @@ window.Game = class Game
             obj.movement.pos.Set(x, y)
     
     create_spawner: ->
-        t = new window.Timer(this.world, 0.4, =>
+        t = new Timer(this.world, 0.4, =>
             if (Math.random() < 0.2)
                 this.create_some_enemies(1 + 2 * Math.random())
             if (Math.random() < 0.3)
@@ -129,7 +129,7 @@ window.Game = class Game
 
     create_world: ->
         field = [0, 0, this.width, this.height]
-        world = new window.World(field)
+        world = new World(field)
         world
     
     collision_handler: (dt, coll) ->
