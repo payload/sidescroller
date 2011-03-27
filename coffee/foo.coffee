@@ -30,10 +30,10 @@ mainloop = (game, ctx, canvas, dt, steps) ->
     ctx.restore();
 
 window.onkeydown = (key) ->
-    this.keybindings.keydown(key)
+    @keybindings.keydown(key)
 
 window.onkeyup = (key) ->
-    this.keybindings.keyup(key)
+    @keybindings.keyup(key)
 
 class KeyBindings
     constructor: ->
@@ -63,18 +63,18 @@ class KeyBindings
     keydown: (key) ->
         k = key.which
         #console.log("keydown", k)
-        if k of this.bindings && !(k of this.active_bindings)
-            this.bindings[k].down?()
-            this.active_bindings[k] = 
-                during: this.bindings[k].during
+        if k of @bindings && !(k of @active_bindings)
+            @bindings[k].down?()
+            @active_bindings[k] = 
+                during: @bindings[k].during
                 called: false
 
     keyup: (key) ->
         k = key.which
-        if k of this.active_bindings
-            {during:during, called:called} = this.active_bindings[k]
+        if k of @active_bindings
+            {during:during, called:called} = @active_bindings[k]
             during?() if not called
             # call during() at least once between down() and up()
-            delete this.active_bindings[k]
-            this.bindings[k].up?()
+            delete @active_bindings[k]
+            @bindings[k].up?()
 

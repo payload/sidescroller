@@ -1,12 +1,12 @@
 window.Game = class Game
     constructor: (@canvas, @bindings) ->
-        this.width = @canvas.width
-        this.height = @canvas.height
-        this.world = this.create_world()
-        this.player = this.create_player()
-        this.create_spawner()
-        this.pause = false
-        this.game_over = false
+        @width = @canvas.width
+        @height = @canvas.height
+        @world = @create_world()
+        @player = @create_player()
+        @create_spawner()
+        @pause = false
+        @game_over = false
         @keys =
             up: [87, 75, 38]
             left: [65, 72, 37]
@@ -15,13 +15,13 @@ window.Game = class Game
             shoot: [16, 32]
             pause: [80]
             mute: [77]
-        this.set_bindings()
+        @set_bindings()
 
     disable_player_bindings: ->
         keys = @keys
         all_keys = []
         all_keys = all_keys.concat(action) for action in keys
-        this.bindings.disable(x) for k in all_keys
+        @bindings.disable(x) for k in all_keys
 
     enable_binding: (keys, action) ->
         @bindings.enable.apply(@bindings, [k].concat(action)) for k in keys
@@ -66,15 +66,15 @@ window.Game = class Game
         @enable_binding(keys.shoot, shoot) # Shift, Space
 
     switch_pause: ->
-        this.pause = !this.pause
-        if this.pause
-        then this.disable_player_bindings()
-        else this.set_bindings()
+        @pause = !@pause
+        if @pause
+        then @disable_player_bindings()
+        else @set_bindings()
 
     create_some_obstacles: (count) ->
-        world = this.world
-        width = this.width
-        height = this.height
+        world = @world
+        width = @width
+        height = @height
         for i in [0...count]
             obj = new Obstacle(world)
             x = width + 10
@@ -82,17 +82,17 @@ window.Game = class Game
             obj.movement.pos.Set(x, y)
     
     create_spawner: ->
-        t = new Timer(this.world, 0.4, =>
+        t = new Timer(@world, 0.4, =>
             if (Math.random() < 0.2)
-                this.create_some_enemies(1 + 2 * Math.random())
+                @create_some_enemies(1 + 2 * Math.random())
             if (Math.random() < 0.3)
-                this.create_some_obstacles(1 + 3 * Math.random())
+                @create_some_obstacles(1 + 3 * Math.random())
         )
     
     create_some_enemies: (count) ->
-        world = this.world
-        width = this.width
-        height = this.height
+        world = @world
+        width = @width
+        height = @height
         for i in [0...count]
             obj = new DumbUnit(world)
             m = obj.movement
@@ -106,9 +106,9 @@ window.Game = class Game
             obj.random_movement = true if Math.random() < 0.5
     
     create_player: ->
-        world = this.world
-        width = this.width
-        height = this.height
+        world = @world
+        width = @width
+        height = @height
         player = new DumbUnit(world)
         x = width * Math.random()
         y = height * Math.random()
@@ -128,7 +128,7 @@ window.Game = class Game
         player
 
     create_world: ->
-        field = [0, 0, this.width, this.height]
+        field = [0, 0, @width, @height]
         world = new World(field)
         world
     
@@ -138,17 +138,17 @@ window.Game = class Game
     
     step: (dt) ->
         return undefined if @pause
-        chandler = this.collision_handler
-        collisions = this.world.get_collisions()
+        chandler = @collision_handler
+        collisions = @world.get_collisions()
         chandler(dt, collision) for collision in collisions
-        this.world.step(dt)
+        @world.step(dt)
     
     draw: (ctx) ->
-        this.world.draw_objs()
+        @world.draw_objs()
         ctx.save()
         ctx.lineWidth = 2
         ctx.strokeStyle = "gray"
-        this.world.draw_shapes(ctx)
+        @world.draw_shapes(ctx)
         score = Math.round(@world.score)
         score = if score == 1 then "#{score} point" else "#{score} points"
         ctx.font = "1em VT323"

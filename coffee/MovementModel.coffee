@@ -1,19 +1,19 @@
 window.MovementModel = class MovementModel
     constructor: ->
-        this.pos = new b2Vec2(0, 0)
-        this.size = new b2Vec2(10, 10)
-        this.rot = [0]
+        @pos = new b2Vec2(0, 0)
+        @size = new b2Vec2(10, 10)
+        @rot = [0]
         
-        this.vel = new b2Vec2(0, 0)
-        this.vel_want = new b2Vec2(0, 0)
-        this.vel_max = [400]
-        this.accel = [3]
+        @vel = new b2Vec2(0, 0)
+        @vel_want = new b2Vec2(0, 0)
+        @vel_max = [400]
+        @accel = [3]
 
     step: (dt, veladd) ->
-        vel = this.vel
-        vel_want = this.vel_want
-        vel_max = this.vel_max[0]
-        accel = this.accel[0]
+        vel = @vel
+        vel_want = @vel_want
+        vel_max = @vel_max[0]
+        accel = @accel[0]
         diff = vel_want.Copy()
         diff.Add(veladd) if veladd?
         diff.Subtract(vel)
@@ -23,8 +23,8 @@ window.MovementModel = class MovementModel
             vel.Normalize()
             vel.Multiply(vel_max)
     
-        veldt = this.vel.Copy()
+        veldt = @vel.Copy()
         veldt.Multiply(dt)
-        this.pos.Add(veldt)
+        @pos.Add(veldt)
 
 
