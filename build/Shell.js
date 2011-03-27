@@ -18,7 +18,7 @@
     function Shell(world) {
       var i, snd, that;
       this.world = world;
-      this.init(world);
+      Shell.__super__.constructor.call(this, world);
       this.movement.size.Set(5, 5);
       that = this;
       this.damage.die = function(other) {

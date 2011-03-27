@@ -13,7 +13,7 @@
     function DumbUnit(world) {
       var dmg;
       this.world = world;
-      this.init(world);
+      DumbUnit.__super__.constructor.call(this, world);
       this.movement.size.Set(20, 20);
       this.move_up = false;
       this.move_down = false;

@@ -1,6 +1,6 @@
 window.DumbUnit = class DumbUnit extends FlyingObject
     constructor: (@world) ->
-        @init(world)
+        super(world)
         @movement.size.Set(20, 20)
         
         @move_up = false

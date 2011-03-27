@@ -1,6 +1,6 @@
 window.Shell = class Shell extends FlyingObject
     constructor: (@world) ->
-        @init(world)
+        super(world)
         @movement.size.Set(5, 5)
         that = this
         @damage.die = (other) ->

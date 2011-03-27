@@ -1,8 +1,7 @@
 (function() {
   var FlyingObject;
   window.FlyingObject = FlyingObject = (function() {
-    function FlyingObject() {}
-    FlyingObject.prototype.init = function(world) {
+    function FlyingObject(world) {
       this.world = world;
       this.movement = new MovementModel();
       this.damage = new DamageModel();
@@ -11,8 +10,8 @@
       this.remove_when_out_of_sight = true;
       this.removed = false;
       this.show_energy = false;
-      return this.world.add_obj(this);
-    };
+      this.world.add_obj(this);
+    }
     FlyingObject.prototype.collide = function(dt, other, coll) {
       var obj;
       obj = other.obj;

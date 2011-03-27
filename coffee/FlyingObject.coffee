@@ -1,5 +1,5 @@
 window.FlyingObject = class FlyingObject
-    init: (@world) ->
+    constructor: (@world) ->
         @movement = new MovementModel()
         @damage = new DamageModel()
         @sprite = new Rectangle(world, this)
