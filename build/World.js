@@ -19,7 +19,7 @@
         var _results;
         _results = [];
         for (x = 0; x < 10; x++) {
-          _results.push(new Audio('laser.ogg'));
+          _results.push(new Audio('stuff/laser.ogg'));
         }
         return _results;
       })() : [];

@@ -1,9 +1,14 @@
-all: $(patsubst %.coffee, %-compile, $(wildcard *.coffee))
+BUILD_PATH = build
+COFFEE = $(wildcard coffee/*.coffee)
+JS = $(wildcard $(BUILD_PATH)/*.js)
+COFFEE_PAT = coffee/%.coffee
+JS_PAT = $(BUILD_PATH)/%.js
 
-clean: $(patsubst %.coffee, %-clean, $(wildcard *.coffee))
+compile: $(patsubst $(COFFEE_PAT), $(JS_PAT), $(COFFEE))
 
-%-compile: %.coffee
-	coffee -c $<
+clean: $(JS)
+	rm -f $?
 
-%-clean: %.js
-	rm $<
+build/%.js: $(COFFEE_PAT)
+	coffee -c -o $(BUILD_PATH)/ $<
+
