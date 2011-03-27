@@ -43,7 +43,6 @@
             break;
           }
           if (this.world.laser_sound === i) {
-            console.log(snd.duration, snd.currentTime, snd.paused, snd.ended);
             break;
           }
         }

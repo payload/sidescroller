@@ -18,7 +18,6 @@ window.Shell = class Shell extends FlyingObject
                     snd.play()
                     break
                 if @world.laser_sound == i
-                    console.log(snd.duration, snd.currentTime, snd.paused, snd.ended)
                     break
             
 
