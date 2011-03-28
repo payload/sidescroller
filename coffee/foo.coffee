@@ -42,7 +42,6 @@ class KeyBindings
         @active_bindings = {}
     
     enable: (key, down, up, during) ->
-        console.log("enable #{key} #{down?} #{up?} #{during?}");
         @bindings[key] = 
             down: down
             up: up

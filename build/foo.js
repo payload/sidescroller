@@ -52,7 +52,6 @@
       this.active_bindings = {};
     }
     KeyBindings.prototype.enable = function(key, down, up, during) {
-      console.log("enable " + key + " " + (down != null) + " " + (up != null) + " " + (during != null));
       return this.bindings[key] = {
         down: down,
         up: up,

@@ -1,6 +1,6 @@
 (function() {
   var Game;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty;
   window.Game = Game = (function() {
     function Game(canvas, bindings) {
       this.canvas = canvas;
@@ -9,10 +9,16 @@
       this.height = this.canvas.height;
       this.world = this.create_world();
       this.player = this.create_player();
-      this.create_spawner();
+      this.spawner = this.create_spawner();
       this.pause = false;
       this.game_over = false;
-      this.keys = {
+      this.keys = this.create_keys();
+      this.texts = this.create_texts();
+      this.actions = this.create_actions();
+      this.set_bindings();
+    }
+    Game.prototype.create_keys = function() {
+      return {
         up: [87, 75, 38],
         left: [65, 72, 37],
         down: [83, 74, 40],
@@ -21,20 +27,99 @@
         pause: [80],
         mute: [77]
       };
-      this.set_bindings();
-    }
-    Game.prototype.disable_player_bindings = function() {
-      var action, all_keys, k, keys, _i, _j, _len, _len2, _results;
-      keys = this.keys;
-      all_keys = [];
-      for (_i = 0, _len = keys.length; _i < _len; _i++) {
-        action = keys[_i];
-        all_keys = all_keys.concat(action);
-      }
+    };
+    Game.prototype.create_texts = function() {
+      return {
+        reload: "Reload with F5 or Ctrl+R to play it again!",
+        game_over: "GAME OVER",
+        score: function(score) {
+          if (score === 1) {
+            return "" + score + " point";
+          } else {
+            return "" + score + " points";
+          }
+        }
+      };
+    };
+    Game.prototype.create_actions = function() {
+      return {
+        up: [
+          __bind(function(dt) {
+            return this.player.move_up_on(dt);
+          }, this), __bind(function(dt) {
+            return this.player.move_up_off(dt);
+          }, this), null
+        ],
+        left: [
+          __bind(function(dt) {
+            return this.player.move_left_on(dt);
+          }, this), __bind(function(dt) {
+            return this.player.move_left_off(dt);
+          }, this), null
+        ],
+        down: [
+          __bind(function(dt) {
+            return this.player.move_down_on(dt);
+          }, this), __bind(function(dt) {
+            return this.player.move_down_off(dt);
+          }, this), null
+        ],
+        right: [
+          __bind(function(dt) {
+            return this.player.move_right_on(dt);
+          }, this), __bind(function(dt) {
+            return this.player.move_right_off(dt);
+          }, this), null
+        ],
+        shoot: [
+          __bind(function() {
+            return this.player.shoot_on();
+          }, this), __bind(function() {
+            return this.player.shoot_off();
+          }, this), __bind(function(dt) {
+            return this.player.shoot(dt);
+          }, this)
+        ],
+        pause: [
+          null, (__bind(function() {
+            return this.switch_pause();
+          }, this)), null
+        ],
+        mute: [
+          null, (__bind(function() {
+            return this.world.switch_mute();
+          }, this)), null
+        ]
+      };
+    };
+    Game.prototype.set_bindings = function() {
+      var x, _ref, _results;
+      _ref = this.actions;
       _results = [];
-      for (_j = 0, _len2 = all_keys.length; _j < _len2; _j++) {
-        k = all_keys[_j];
-        _results.push(this.bindings.disable(x));
+      for (x in _ref) {
+        if (!__hasProp.call(_ref, x)) continue;
+        _results.push(this.enable_binding(this.keys[x], this.actions[x]));
+      }
+      return _results;
+    };
+    Game.prototype.disable_player_bindings = function() {
+      var x, y, _ref, _results;
+      _ref = this.actions;
+      _results = [];
+      for (y in _ref) {
+        if (!__hasProp.call(_ref, y)) continue;
+        _results.push((function() {
+          var _i, _len, _ref, _results;
+          if (y !== 'pause' && y !== 'mute') {
+            _ref = this.keys[y];
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              x = _ref[_i];
+              _results.push(this.bindings.disable(x));
+            }
+            return _results;
+          }
+        }).call(this));
       }
       return _results;
     };
@@ -47,65 +132,6 @@
       }
       return _results;
     };
-    Game.prototype.set_bindings = function() {
-      var down, keys, left, mute, pause, player, right, shoot, up;
-      player = this.player;
-      keys = this.keys;
-      up = [
-        function(dt) {
-          return player.move_up_on(dt);
-        }, function(dt) {
-          return player.move_up_off(dt);
-        }, null
-      ];
-      left = [
-        function(dt) {
-          return player.move_left_on(dt);
-        }, function(dt) {
-          return player.move_left_off(dt);
-        }, null
-      ];
-      down = [
-        function(dt) {
-          return player.move_down_on(dt);
-        }, function(dt) {
-          return player.move_down_off(dt);
-        }, null
-      ];
-      right = [
-        function(dt) {
-          return player.move_right_on(dt);
-        }, function(dt) {
-          return player.move_right_off(dt);
-        }, null
-      ];
-      shoot = [
-        function() {
-          return player.shoot_on();
-        }, function() {
-          return player.shoot_off();
-        }, function(dt) {
-          return player.shoot(dt);
-        }
-      ];
-      pause = [
-        null, __bind(function() {
-          return this.switch_pause();
-        }, this), null
-      ];
-      mute = [
-        null, __bind(function() {
-          return this.world.switch_mute();
-        }, this), null
-      ];
-      this.enable_binding(keys.mute, mute);
-      this.enable_binding(keys.pause, pause);
-      this.enable_binding(keys.up, up);
-      this.enable_binding(keys.left, left);
-      this.enable_binding(keys.down, down);
-      this.enable_binding(keys.right, right);
-      return this.enable_binding(keys.shoot, shoot);
-    };
     Game.prototype.switch_pause = function() {
       this.pause = !this.pause;
       if (this.pause) {
@@ -115,22 +141,18 @@
       }
     };
     Game.prototype.create_some_obstacles = function(count) {
-      var height, i, obj, width, world, x, y, _results;
-      world = this.world;
-      width = this.width;
-      height = this.height;
+      var i, obj, x, y, _results;
       _results = [];
       for (i = 0; (0 <= count ? i < count : i > count); (0 <= count ? i += 1 : i -= 1)) {
-        obj = new Obstacle(world);
-        x = width + 10;
-        y = height * Math.random();
+        obj = new Obstacle(this.world);
+        x = this.width + 10;
+        y = this.height * Math.random();
         _results.push(obj.movement.pos.Set(x, y));
       }
       return _results;
     };
     Game.prototype.create_spawner = function() {
-      var t;
-      return t = new Timer(this.world, 0.4, __bind(function() {
+      return new Timer(this.world, 0.4, __bind(function() {
         if (Math.random() < 0.2) {
           this.create_some_enemies(1 + 2 * Math.random());
         }
@@ -140,16 +162,13 @@
       }, this));
     };
     Game.prototype.create_some_enemies = function(count) {
-      var height, i, m, obj, width, world, x, y, _results;
-      world = this.world;
-      width = this.width;
-      height = this.height;
+      var i, m, obj, x, y, _results;
       _results = [];
       for (i = 0; (0 <= count ? i < count : i > count); (0 <= count ? i += 1 : i -= 1)) {
-        obj = new DumbUnit(world);
+        obj = new DumbUnit(this.world);
         m = obj.movement;
-        x = width + 10;
-        y = height * Math.random();
+        x = this.width + 10;
+        y = this.height * Math.random();
         obj.damage.groups.push("enemy");
         obj.shooting.shell_group = "enemy";
         m.pos.Set(x + m.size.x, y);
@@ -160,13 +179,10 @@
       return _results;
     };
     Game.prototype.create_player = function() {
-      var die, height, player, width, world, x, y;
-      world = this.world;
-      width = this.width;
-      height = this.height;
-      player = new DumbUnit(world);
-      x = width * Math.random();
-      y = height * Math.random();
+      var die, player, x, y;
+      player = new DumbUnit(this.world);
+      x = this.width * Math.random();
+      y = this.height * Math.random();
       player.damage.regenerate = 0.3;
       player.keep_in_field = true;
       player.shooting.auto_shoot = false;
@@ -212,21 +228,43 @@
       return this.world.step(dt);
     };
     Game.prototype.draw = function(ctx) {
-      var score;
-      this.world.draw_objs();
+      var big_font, ch, cw, normal_font, score;
+      ({
+        create_style: function() {}
+      });
+      normal_font = function(ctx) {
+        return ctx.font = "1em VT323";
+      };
+      big_font = function(ctx) {
+        return ctx.font = "5em VT323";
+      };
       ctx.save();
       ctx.lineWidth = 2;
       ctx.strokeStyle = "gray";
+      this.world.draw_objs();
       this.world.draw_shapes(ctx);
       score = Math.round(this.world.score);
-      score = score === 1 ? "" + score + " point" : "" + score + " points";
-      ctx.font = "1em VT323";
-      ctx.fillText(score, 10, 15);
+      score = this.texts.score(score);
+      ctx.save();
+      ctx.translate(6, 15);
+      normal_font(ctx);
+      ctx.fillText(score, 0, 0);
+      ctx.restore();
       if (this.game_over) {
+        ctx.save();
+        cw = this.width / 2;
+        ch = this.height / 2;
+        ctx.translate(cw, ch);
         ctx.textAlign = "center";
-        ctx.fillText("Reload with F5 or Ctrl+R to play it again!", 320, 262);
-        ctx.font = "5em VT323";
-        ctx.fillText("GAME OVER", 320, 240);
+        ctx.save();
+        normal_font(ctx);
+        ctx.fillText(this.texts.reload, 0, 22);
+        ctx.restore();
+        ctx.save();
+        big_font(ctx);
+        ctx.fillText(this.texts.game_over, 0, 0);
+        ctx.restore();
+        ctx.restore();
       }
       return ctx.restore();
     };
