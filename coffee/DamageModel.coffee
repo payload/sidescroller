@@ -16,8 +16,7 @@ window.DamageModel = class DamageModel
                 @max_energy)
     
     check_group: (a, b) ->
-        for g in a
-            return true if g in b
+        (return true if g in b) for g in a
         false
     
     apply_damage: (dt, dmg, to_apply) ->
