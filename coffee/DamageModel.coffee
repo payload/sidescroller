@@ -25,10 +25,5 @@ window.DamageModel = class DamageModel
         dmg.die(this) if dmg.energy < 0
         true
 
-    collide: (dt, dmg, coll) ->    
-        @apply_damage(dt, dmg, @to_apply)
-    
-    explode: (other, damage) ->
-        @apply_damage(1, other, damage)
-
-
+    collide: (dt, dmg, coll) -> @apply_damage(dt, dmg, @to_apply)
+    explode: (other, damage) -> @apply_damage(1, other, damage)
