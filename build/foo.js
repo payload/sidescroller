@@ -2,49 +2,48 @@
   var KeyBindings, mainloop;
   var __hasProp = Object.prototype.hasOwnProperty;
   window.onload = function() {
-    var canvas, ctx, dt, game, interval, steps;
+    var canvas, ctx, dt, game, interval, key, keybindings, steps;
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
-    window.keybindings = new KeyBindings();
-    game = new Game(canvas, window.keybindings);
+    keybindings = window.keybindings = new KeyBindings();
+    window.onkeydown = function(key) {
+      return keybindings.keydown(key);
+    };
+    window.onkeyup = function(key) {
+      return keybindings.keyup(key);
+    };
+    game = new Game(canvas, keybindings);
+    key = game.keys.shoot[0];
     canvas.onmousemove = function(e) {};
     canvas.onmousedown = function(e) {
       if (e.button === 0) {
         return window.onkeydown({
-          which: 16
+          which: key
         });
       }
     };
     canvas.onmouseup = function(e) {
       if (e.button === 0) {
         return window.onkeyup({
-          which: 16
+          which: key
         });
       }
     };
     interval = 30;
     dt = 0.01;
     steps = interval / dt / 1000;
-    return setInterval(function() {
+    return setInterval((function() {
       return mainloop(game, ctx, canvas, dt, steps);
-    }, interval);
+    }), interval);
   };
   mainloop = function(game, ctx, canvas, dt, steps) {
     var i;
     for (i = 0; (0 <= steps ? i < steps : i > steps); (0 <= steps ? i += 1 : i -= 1)) {
       game.step(dt);
-      keybindings.step(dt);
+      window.keybindings.step(dt);
     }
-    ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    game.draw(ctx);
-    return ctx.restore();
-  };
-  window.onkeydown = function(key) {
-    return this.keybindings.keydown(key);
-  };
-  window.onkeyup = function(key) {
-    return this.keybindings.keyup(key);
+    return game.draw(ctx);
   };
   KeyBindings = (function() {
     function KeyBindings() {

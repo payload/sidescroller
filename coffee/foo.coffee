@@ -2,38 +2,29 @@ window.onload = ->
     canvas = document.getElementById("canvas")
     ctx = canvas.getContext("2d")
     
-    window.keybindings = new KeyBindings()
-    game = new Game(canvas, window.keybindings)
+    keybindings = window.keybindings = new KeyBindings()
+    window.onkeydown = (key) -> keybindings.keydown(key)
+    window.onkeyup = (key) -> keybindings.keyup(key)
     
+    game = new Game(canvas, keybindings)
+    
+    # shoot with left mouse hack
+    key = game.keys.shoot[0]
     canvas.onmousemove = (e) ->
-    
-    canvas.onmousedown = (e) ->
-        window.onkeydown({which: 16}) if e.button == 0
-    
-    canvas.onmouseup = (e) ->
-        window.onkeyup({which: 16}) if e.button == 0
+    canvas.onmousedown = (e) -> window.onkeydown({which: key}) if e.button == 0
+    canvas.onmouseup = (e) -> window.onkeyup({which: key}) if e.button == 0
 
     interval = 30
     dt = 0.01
     steps = interval / dt / 1000
-    setInterval(
-        -> mainloop(game, ctx, canvas, dt, steps),
-        interval)
+    setInterval((-> mainloop(game, ctx, canvas, dt, steps)), interval)
 
 mainloop = (game, ctx, canvas, dt, steps) ->
     for i in [0...steps]
-        game.step(dt);
-        keybindings.step(dt);
-    ctx.save();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    game.draw(ctx);
-    ctx.restore();
-
-window.onkeydown = (key) ->
-    @keybindings.keydown(key)
-
-window.onkeyup = (key) ->
-    @keybindings.keyup(key)
+        game.step(dt)
+        window.keybindings.step(dt)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    game.draw(ctx)
 
 class KeyBindings
     constructor: ->
