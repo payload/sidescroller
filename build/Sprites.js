@@ -21,21 +21,16 @@
       return this.world.remove_shape(this);
     };
     Rectangle.prototype.draw = function(ctx) {
-      var hsize, pos, size, sx, sy;
+      var h, pos, size, w;
       ctx.save();
       pos = this.pos;
       size = this.size;
-      hsize = size.Copy();
-      hsize.Multiply(0.5);
-      sx = hsize.x;
-      sy = hsize.y;
+      w = size.x;
+      h = size.y;
       ctx.translate(pos.x, pos.y);
       ctx.rotate(this.rot[0]);
       ctx.beginPath();
-      ctx.moveTo(-sx, -sy);
-      ctx.lineTo(sx, -sy);
-      ctx.lineTo(sx, sy);
-      ctx.lineTo(-sx, sy);
+      ctx.rect(-w / 2, -h / 2, w, h);
       ctx.closePath();
       if (this.style.fill !== null) {
         ctx.fillStyle = this.color_to_css(this.style.fill);

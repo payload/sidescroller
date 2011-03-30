@@ -18,17 +18,12 @@ window.Rectangle = class Rectangle
         ctx.save()
         pos = @pos
         size = @size
-        hsize = size.Copy()
-        hsize.Multiply(0.5)
-        sx = hsize.x
-        sy = hsize.y
+        w = size.x
+        h = size.y
         ctx.translate(pos.x, pos.y)
         ctx.rotate(@rot[0])
         ctx.beginPath()
-        ctx.moveTo(-sx, -sy)
-        ctx.lineTo( sx, -sy)
-        ctx.lineTo( sx,  sy)
-        ctx.lineTo(-sx,  sy)
+        ctx.rect(-w / 2, -h / 2, w, h)
         ctx.closePath()
         if @style.fill != null
             ctx.fillStyle = @color_to_css(@style.fill)
