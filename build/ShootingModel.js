@@ -23,19 +23,18 @@
     };
     ShootingModel.prototype.shoot = function(dt, movement) {
       var m, pos, vel;
-      if (!this.not_recharged) {
-        this.not_recharged = this.recharge_time;
-        m = movement;
-        pos = this.shell_vel.Copy();
-        vel = this.shell_vel.Copy();
-        pos.Normalize();
-        pos.Multiply(m.size.Length());
-        pos.Add(m.pos);
-        vel.Add(m.vel);
-        return this.create_shell(pos, vel);
-      } else {
+      if (this.not_recharged) {
         return null;
       }
+      this.not_recharged = this.recharge_time;
+      m = movement;
+      pos = this.shell_vel.Copy();
+      vel = this.shell_vel.Copy();
+      pos.Normalize();
+      pos.Multiply(m.size.Length());
+      pos.Add(m.pos);
+      vel.Add(m.vel);
+      return this.create_shell(pos, vel);
     };
     ShootingModel.prototype.step = function(dt, movement) {
       this.not_recharged = Math.max(0, this.not_recharged - dt);

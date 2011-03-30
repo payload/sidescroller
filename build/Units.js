@@ -33,7 +33,7 @@
     }
     DumbUnit.prototype.collide = function(dt, other, coll) {
       if (DumbUnit.__super__.collide.call(this, dt, other, coll)) {
-        return this.movement.rot[0] += Math.random() - Math.random();
+        return this.movement.rot[0] = Math.random() * 2 * Math.PI;
       }
     };
     DumbUnit.prototype.move_up_on = function(dt) {

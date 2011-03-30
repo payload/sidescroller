@@ -21,7 +21,7 @@ window.DumbUnit = class DumbUnit extends FlyingObject
     
     collide: (dt, other, coll) ->
         if super(dt, other, coll)
-            @movement.rot[0] += (Math.random() - Math.random())
+            @movement.rot[0] = Math.random() * 2 * Math.PI
     
     move_up_on: (dt) -> @move_up = true
     move_up_off: (dt) -> @move_up = false

@@ -16,18 +16,16 @@ window.ShootingModel = class ShootingModel
         shell
     
     shoot: (dt, movement) ->
-        if not @not_recharged
-            @not_recharged = @recharge_time
-            m = movement
-            pos = @shell_vel.Copy()
-            vel = @shell_vel.Copy()
-            pos.Normalize()
-            pos.Multiply(m.size.Length())
-            pos.Add(m.pos)
-            vel.Add(m.vel)
-            @create_shell(pos, vel)
-        else
-            null
+        return null if @not_recharged
+        @not_recharged = @recharge_time
+        m = movement
+        pos = @shell_vel.Copy()
+        vel = @shell_vel.Copy()
+        pos.Normalize()
+        pos.Multiply(m.size.Length())
+        pos.Add(m.pos)
+        vel.Add(m.vel)
+        @create_shell(pos, vel)
 
     step: (dt, movement) ->    
         @not_recharged = Math.max(0, @not_recharged - dt)

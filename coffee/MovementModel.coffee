@@ -3,7 +3,6 @@ window.MovementModel = class MovementModel
         @pos = new b2Vec2(0, 0)
         @size = new b2Vec2(10, 10)
         @rot = [0]
-        
         @vel = new b2Vec2(0, 0)
         @vel_want = new b2Vec2(0, 0)
         @vel_max = [400]
@@ -22,7 +21,6 @@ window.MovementModel = class MovementModel
         if vel.Length() > vel_max
             vel.Normalize()
             vel.Multiply(vel_max)
-    
         veldt = @vel.Copy()
         veldt.Multiply(dt)
         @pos.Add(veldt)
