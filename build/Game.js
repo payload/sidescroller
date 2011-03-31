@@ -185,12 +185,14 @@
       }
     };
     Game.prototype.create_some_obstacles = function(count) {
-      var i, obj, x, y, _results;
+      var i, obj, s, x, y, _results;
       _results = [];
       for (i = 0; (0 <= count ? i < count : i > count); (0 <= count ? i += 1 : i -= 1)) {
         obj = new Obstacle(this.world);
-        x = this.width + 10;
+        s = obj.movement.size.Length();
+        x = this.width + s;
         y = this.height * Math.random();
+        y = Math.max(Math.min(y, this.height - s / 2), s / 2);
         _results.push(obj.movement.pos.Set(x, y));
       }
       return _results;
@@ -206,13 +208,15 @@
       }, this));
     };
     Game.prototype.create_some_enemies = function(count) {
-      var i, m, obj, x, y, _results;
+      var i, m, obj, s, x, y, _results;
       _results = [];
       for (i = 0; (0 <= count ? i < count : i > count); (0 <= count ? i += 1 : i -= 1)) {
         obj = new DumbUnit(this.world);
         m = obj.movement;
-        x = this.width + 10;
+        s = m.size.Length();
+        x = this.width + s;
         y = this.height * Math.random();
+        y = Math.max(Math.min(y, this.height - s / 2), s / 2);
         obj.damage.groups.push("enemy");
         obj.shooting.shell_group = "enemy";
         m.pos.Set(x + m.size.x, y);
@@ -223,10 +227,13 @@
       return _results;
     };
     Game.prototype.create_player = function() {
-      var die, player, x, y;
+      var die, player, s, x, y;
       player = new DumbUnit(this.world);
-      x = this.width * Math.random();
+      s = player.movement.size.Length();
+      x = this.width / 2 * Math.random();
+      x = Math.max(Math.min(x, this.width - s / 2), s / 2);
       y = this.height * Math.random();
+      y = Math.max(Math.min(y, this.height - s / 2), s / 2);
       player.damage.regenerate = 0.3;
       player.keep_in_field = true;
       player.shooting.auto_shoot = false;

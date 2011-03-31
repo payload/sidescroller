@@ -94,8 +94,10 @@ window.Game = class Game
     create_some_obstacles: (count) ->
         for i in [0...count]
             obj = new Obstacle(@world)
-            x = @width + 10
+            s = obj.movement.size.Length()
+            x = @width + s
             y = @height * Math.random()
+            y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.movement.pos.Set(x, y)
     
     create_spawner: ->
@@ -110,8 +112,10 @@ window.Game = class Game
         for i in [0...count]
             obj = new DumbUnit(@world)
             m = obj.movement
-            x = @width + 10
+            s = m.size.Length()
+            x = @width + s
             y = @height * Math.random()
+            y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.damage.groups.push("enemy")
             obj.shooting.shell_group = "enemy"
             m.pos.Set(x + m.size.x, y)
@@ -121,8 +125,11 @@ window.Game = class Game
     
     create_player: ->
         player = new DumbUnit(@world)
-        x = @width * Math.random()
+        s = player.movement.size.Length()
+        x = @width / 2 * Math.random()
+        x = Math.max(Math.min(x, @width - s / 2), s / 2)
         y = @height * Math.random()
+        y = Math.max(Math.min(y, @height - s / 2), s / 2)
         player.damage.regenerate = 0.3
         player.keep_in_field = true
         player.shooting.auto_shoot = false
