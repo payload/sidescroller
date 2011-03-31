@@ -122,6 +122,8 @@ window.Game = class Game
             m.vel.Set(-100 + 40 * Math.random(), 0)
             m.vel_want.SetV(m.vel)
             obj.random_movement = true if Math.random() < 0.5
+            if obj.random_movement and Math.random() < 0.5
+                obj.keep_right_movement = true 
     
     create_player: ->
         player = new DumbUnit(@world)

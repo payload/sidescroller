@@ -22,6 +22,8 @@
       this.normsize = null;
       this.shooting = new ShootingModel(world);
       this.random_movement = false;
+      this.keep_right_movement = false;
+      this.keep_right_impulse = false;
       dmg = this.damage;
       dmg.energy = 10;
       dmg.max_energy = 10;
@@ -82,7 +84,7 @@
       }
     };
     DumbUnit.prototype.step = function(dt) {
-      var pi, polar, veladd, velmax;
+      var pi, polar, veladd, velmax, w;
       if (this.random_movement) {
         if (Math.random() < 0.1) {
           this.move_up = !this.move_up;
@@ -96,6 +98,20 @@
         if (Math.random() < 0.1) {
           this.move_right = !this.move_right;
         }
+      }
+      w = this.world.field[2];
+      if (this.keep_right_movement && (this.movement.pos.x < (w / 2))) {
+        this.keep_right_impulse = true;
+      }
+      if (this.keep_right_impulse && (this.movement.pos.x > (w * 2 / 3))) {
+        this.keep_right_impulse = false;
+        this.move_right = false;
+      }
+      if (this.keep_right_impulse) {
+        this.move_left = false;
+        this.move_up = false;
+        this.move_down = false;
+        this.move_right = true;
       }
       polar = b2Vec2.Polar;
       pi = 3.14159;

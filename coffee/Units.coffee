@@ -11,6 +11,8 @@ window.DumbUnit = class DumbUnit extends FlyingObject
         @normsize = null
         @shooting = new ShootingModel(world)
         @random_movement = false
+        @keep_right_movement = false
+        @keep_right_impulse = false
         
         dmg = @damage
         dmg.energy = 10
@@ -54,6 +56,17 @@ window.DumbUnit = class DumbUnit extends FlyingObject
             @move_down  = !@move_down  if Math.random() < 0.1
             @move_left  = !@move_left  if Math.random() < 0.1
             @move_right = !@move_right if Math.random() < 0.1
+        w = @world.field[2]
+        if @keep_right_movement and (@movement.pos.x < (w / 2))
+            @keep_right_impulse = true
+        if @keep_right_impulse and (@movement.pos.x > (w*2 / 3))
+            @keep_right_impulse = false
+            @move_right = false
+        if @keep_right_impulse
+            @move_left = false
+            @move_up = false
+            @move_down = false
+            @move_right = true
     
         polar = b2Vec2.Polar
         pi = 3.14159
@@ -66,4 +79,3 @@ window.DumbUnit = class DumbUnit extends FlyingObject
         
         super(dt, veladd)
         @shooting.step(dt, @movement)
-

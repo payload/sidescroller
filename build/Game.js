@@ -222,7 +222,10 @@
         m.pos.Set(x + m.size.x, y);
         m.vel.Set(-100 + 40 * Math.random(), 0);
         m.vel_want.SetV(m.vel);
-        _results.push(Math.random() < 0.5 ? obj.random_movement = true : void 0);
+        if (Math.random() < 0.5) {
+          obj.random_movement = true;
+        }
+        _results.push(obj.random_movement && Math.random() < 0.5 ? obj.keep_right_movement = true : void 0);
       }
       return _results;
     };
