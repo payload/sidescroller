@@ -18,9 +18,11 @@ window.DumbUnit = class DumbUnit extends FlyingObject
         dmg.to_apply = 20
         dmg.factor = 1
         dmg.die = => @remove()
+        @shock_energy = dmg.energy
     
     collide: (dt, other, coll) ->
-        if super(dt, other, coll)
+        if super(dt, other, coll) and @shock_energy - @damage.energy > 0.5
+            @shock_energy = @damage.energy
             @movement.rot[0] = Math.random() * 2 * Math.PI
     
     move_up_on: (dt) -> @move_up = true
@@ -41,11 +43,10 @@ window.DumbUnit = class DumbUnit extends FlyingObject
             @normsize = null
     
     shoot: (dt) ->
-        if @normsize != null
+        if @shooting.shoot(dt, @movement) and @normsize != null
             shake = @normsize.Copy()
             shake.Multiply(1 + 0.3 * (Math.random() - Math.random()))
             @movement.size.SetV(shake)
-        @shooting.shoot(dt, @movement)
     
     step: (dt) ->
         if @random_movement

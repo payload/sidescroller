@@ -2,7 +2,7 @@
   var KeyBindings, mainloop;
   var __hasProp = Object.prototype.hasOwnProperty;
   window.onload = function() {
-    var canvas, ctx, dt, game, interval, key, keybindings, steps;
+    var canvas, ctx, game, interval, key, keybindings, maxdt;
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
     keybindings = window.keybindings = new KeyBindings();
@@ -29,18 +29,20 @@
         });
       }
     };
-    interval = 30;
-    dt = 0.01;
-    steps = interval / dt / 1000;
+    interval = 0.03;
+    maxdt = 0.01;
     return setInterval((function() {
-      return mainloop(game, ctx, canvas, dt, steps);
-    }), interval);
+      return mainloop(game, ctx, canvas, maxdt, interval);
+    }), interval * 1e3);
   };
-  mainloop = function(game, ctx, canvas, dt, steps) {
-    var i;
-    for (i = 0; (0 <= steps ? i < steps : i > steps); (0 <= steps ? i += 1 : i -= 1)) {
+  mainloop = function(game, ctx, canvas, maxdt, interval) {
+    var dt;
+    interval *= game.time_factor;
+    while (interval > 0) {
+      dt = interval - maxdt > 0 ? maxdt : interval;
       game.step(dt);
       window.keybindings.step(dt);
+      interval -= dt;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     return game.draw(ctx);

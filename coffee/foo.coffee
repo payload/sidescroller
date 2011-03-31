@@ -14,15 +14,17 @@ window.onload = ->
     canvas.onmousedown = (e) -> window.onkeydown({which: key}) if e.button == 0
     canvas.onmouseup = (e) -> window.onkeyup({which: key}) if e.button == 0
 
-    interval = 30
-    dt = 0.01
-    steps = interval / dt / 1000
-    setInterval((-> mainloop(game, ctx, canvas, dt, steps)), interval)
+    interval = 0.03
+    maxdt = 0.01
+    setInterval((-> mainloop(game, ctx, canvas, maxdt, interval)), interval*1e3)
 
-mainloop = (game, ctx, canvas, dt, steps) ->
-    for i in [0...steps]
+mainloop = (game, ctx, canvas, maxdt, interval) ->
+    interval *= game.time_factor
+    while interval > 0
+        dt = if interval - maxdt > 0 then maxdt else interval
         game.step(dt)
         window.keybindings.step(dt)
+        interval -= dt
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     game.draw(ctx)
 

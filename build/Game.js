@@ -12,6 +12,8 @@
       this.spawner = this.create_spawner();
       this.pause = false;
       this.game_over = false;
+      this.time_factor = 1;
+      this.time_factor_display = false;
       this.keys = this.create_keys();
       this.texts = this.create_texts();
       this.actions = this.create_actions();
@@ -25,7 +27,10 @@
         right: [68, 76, 39],
         shoot: [16, 32],
         pause: [80],
-        mute: [77]
+        mute: [77],
+        time_slower: [189],
+        time_faster: [187],
+        time_normal: [48]
       };
     };
     Game.prototype.create_texts = function() {
@@ -38,6 +43,10 @@
           } else {
             return "" + score + " points";
           }
+        },
+        time_factor_display: function(tf) {
+          tf = Math.round(tf * 100) / 100;
+          return "" + tf + " time";
         }
       };
     };
@@ -89,8 +98,43 @@
           null, (__bind(function() {
             return this.world.switch_mute();
           }, this)), null
+        ],
+        time_slower: [
+          __bind(function() {
+            return this.time_display(true);
+          }, this), __bind(function() {
+            return this.time_display(false);
+          }, this), __bind(function(dt) {
+            return this.time_slower(dt);
+          }, this)
+        ],
+        time_faster: [
+          __bind(function() {
+            return this.time_display(true);
+          }, this), __bind(function() {
+            return this.time_display(false);
+          }, this), __bind(function(dt) {
+            return this.time_faster(dt);
+          }, this)
+        ],
+        time_normal: [
+          null, (__bind(function(dt) {
+            return this.time_normal(dt);
+          }, this)), null
         ]
       };
+    };
+    Game.prototype.time_slower = function(dt) {
+      return this.time_factor *= 1 - 0.5 * dt;
+    };
+    Game.prototype.time_faster = function(dt) {
+      return this.time_factor = Math.min(this.time_factor * (1 + 0.5 * dt), 16);
+    };
+    Game.prototype.time_normal = function(dt) {
+      return this.time_factor = 1;
+    };
+    Game.prototype.time_display = function(b) {
+      return this.time_factor_display = b;
     };
     Game.prototype.set_bindings = function() {
       var x, _ref, _results;
@@ -228,7 +272,7 @@
       return this.world.step(dt);
     };
     Game.prototype.draw = function(ctx) {
-      var big_font, ch, cw, normal_font, score;
+      var big_font, ch, cw, normal_font, score, tf;
       ({
         create_style: function() {}
       });
@@ -246,10 +290,16 @@
       score = Math.round(this.world.score);
       score = this.texts.score(score);
       ctx.save();
-      ctx.translate(6, 15);
       normal_font(ctx);
-      ctx.fillText(score, 0, 0);
+      ctx.fillText(score, 6, 15);
       ctx.restore();
+      if (this.time_factor_display) {
+        tf = this.texts.time_factor_display(this.time_factor);
+        ctx.save();
+        normal_font(ctx);
+        ctx.fillText(tf, 6, 40);
+        ctx.restore();
+      }
       if (this.game_over) {
         ctx.save();
         cw = this.width / 2;

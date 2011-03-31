@@ -30,9 +30,11 @@
       dmg.die = __bind(function() {
         return this.remove();
       }, this);
+      this.shock_energy = dmg.energy;
     }
     DumbUnit.prototype.collide = function(dt, other, coll) {
-      if (DumbUnit.__super__.collide.call(this, dt, other, coll)) {
+      if (DumbUnit.__super__.collide.call(this, dt, other, coll) && this.shock_energy - this.damage.energy > 0.5) {
+        this.shock_energy = this.damage.energy;
         return this.movement.rot[0] = Math.random() * 2 * Math.PI;
       }
     };
@@ -73,12 +75,11 @@
     };
     DumbUnit.prototype.shoot = function(dt) {
       var shake;
-      if (this.normsize !== null) {
+      if (this.shooting.shoot(dt, this.movement) && this.normsize !== null) {
         shake = this.normsize.Copy();
         shake.Multiply(1 + 0.3 * (Math.random() - Math.random()));
-        this.movement.size.SetV(shake);
+        return this.movement.size.SetV(shake);
       }
-      return this.shooting.shoot(dt, this.movement);
     };
     DumbUnit.prototype.step = function(dt) {
       var pi, polar, veladd, velmax;

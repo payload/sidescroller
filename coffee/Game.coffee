@@ -7,6 +7,8 @@ window.Game = class Game
         @spawner = @create_spawner()
         @pause = false
         @game_over = false
+        @time_factor = 1
+        @time_factor_display = false
         @keys = @create_keys()
         @texts = @create_texts()
         @actions = @create_actions()
@@ -20,12 +22,18 @@ window.Game = class Game
         shoot: [16, 32]
         pause: [80]
         mute: [77]
+        time_slower: [189]
+        time_faster: [187]
+        time_normal: [48]
 
     create_texts: ->
         reload: "Reload with F5 or Ctrl+R to play it again!"
         game_over: "GAME OVER"
         score: (score) ->
             if score == 1 then "#{score} point" else "#{score} points"
+        time_factor_display: (tf) ->
+            tf = Math.round(tf * 100) / 100
+            "#{tf} time"
 
     create_actions: ->
         up: [
@@ -50,6 +58,21 @@ window.Game = class Game
             (dt) => @player.shoot(dt)]
         pause: [null, (=> @switch_pause()), null]
         mute: [null, (=> @world.switch_mute()), null]
+        time_slower: [
+            => @time_display(true),
+            => @time_display(false),
+            (dt) => @time_slower(dt)]
+        time_faster: [
+            => @time_display(true),
+            => @time_display(false),
+            (dt) => @time_faster(dt)]
+        time_normal: [null, ((dt) => @time_normal(dt)), null]
+
+    time_slower: (dt) -> @time_factor *= 1 - 0.5 * dt
+    time_faster: (dt) ->
+        @time_factor = Math.min(@time_factor * (1 + 0.5 * dt), 16)
+    time_normal: (dt) -> @time_factor = 1
+    time_display: (b) -> @time_factor_display = b
 
     set_bindings: ->
         @enable_binding(@keys[x], @actions[x]) for own x of @actions
@@ -147,10 +170,16 @@ window.Game = class Game
         score = Math.round(@world.score)
         score = @texts.score(score)
         ctx.save()
-        ctx.translate(6, 15)
         normal_font(ctx)
-        ctx.fillText(score, 0, 0)
+        ctx.fillText(score, 6, 15)
         ctx.restore()
+        # time factor display
+        if @time_factor_display
+            tf = @texts.time_factor_display(@time_factor)
+            ctx.save()
+            normal_font(ctx)
+            ctx.fillText(tf, 6, 40)
+            ctx.restore()
         # game over screen
         if @game_over
             ctx.save()
