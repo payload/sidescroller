@@ -99,6 +99,7 @@ window.Game = class Game
             y = @height * Math.random()
             y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.movement.pos.Set(x, y)
+            obj.damage.groups.push("obstacle")
     
     create_spawner: ->
         new Timer(@world, 0.4, =>
@@ -121,9 +122,10 @@ window.Game = class Game
             m.pos.Set(x + m.size.x, y)
             m.vel.Set(-100 + 40 * Math.random(), 0)
             m.vel_want.SetV(m.vel)
-            obj.random_movement = true if Math.random() < 0.5
+            obj.random_movement = 0.01 if Math.random() < 0.5
             if obj.random_movement and Math.random() < 0.5
                 obj.keep_right_movement = true 
+                obj.damage.groups.push("obstacle")
     
     create_player: ->
         player = new DumbUnit(@world)
@@ -132,7 +134,7 @@ window.Game = class Game
         x = Math.max(Math.min(x, @width - s / 2), s / 2)
         y = @height * Math.random()
         y = Math.max(Math.min(y, @height - s / 2), s / 2)
-        player.damage.regenerate = 0.3
+        player.damage.regenerate = 0.4
         player.keep_in_field = true
         player.shooting.auto_shoot = false
         player.shooting.recharge_time = 0.05

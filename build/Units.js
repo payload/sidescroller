@@ -21,7 +21,8 @@
       this.move_right = false;
       this.normsize = null;
       this.shooting = new ShootingModel(world);
-      this.random_movement = false;
+      this.random_movement = 0;
+      this.random_movement_wait = 0;
       this.keep_right_movement = false;
       this.keep_right_impulse = false;
       dmg = this.damage;
@@ -86,17 +87,21 @@
     DumbUnit.prototype.step = function(dt) {
       var pi, polar, veladd, velmax, w;
       if (this.random_movement) {
-        if (Math.random() < 0.1) {
-          this.move_up = !this.move_up;
-        }
-        if (Math.random() < 0.1) {
-          this.move_down = !this.move_down;
-        }
-        if (Math.random() < 0.1) {
-          this.move_left = !this.move_left;
-        }
-        if (Math.random() < 0.1) {
-          this.move_right = !this.move_right;
+        this.random_movement_wait -= dt;
+        if (this.random_movement_wait <= 0) {
+          this.random_movement_wait = this.random_movement;
+          if (Math.random() < 0.1) {
+            this.move_up = !this.move_up;
+          }
+          if (Math.random() < 0.1) {
+            this.move_down = !this.move_down;
+          }
+          if (Math.random() < 0.1) {
+            this.move_left = !this.move_left;
+          }
+          if (Math.random() < 0.1) {
+            this.move_right = !this.move_right;
+          }
         }
       }
       w = this.world.field[2];

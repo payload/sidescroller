@@ -193,7 +193,8 @@
         x = this.width + s;
         y = this.height * Math.random();
         y = Math.max(Math.min(y, this.height - s / 2), s / 2);
-        _results.push(obj.movement.pos.Set(x, y));
+        obj.movement.pos.Set(x, y);
+        _results.push(obj.damage.groups.push("obstacle"));
       }
       return _results;
     };
@@ -223,9 +224,9 @@
         m.vel.Set(-100 + 40 * Math.random(), 0);
         m.vel_want.SetV(m.vel);
         if (Math.random() < 0.5) {
-          obj.random_movement = true;
+          obj.random_movement = 0.01;
         }
-        _results.push(obj.random_movement && Math.random() < 0.5 ? obj.keep_right_movement = true : void 0);
+        _results.push(obj.random_movement && Math.random() < 0.5 ? (obj.keep_right_movement = true, obj.damage.groups.push("obstacle")) : void 0);
       }
       return _results;
     };
@@ -237,7 +238,7 @@
       x = Math.max(Math.min(x, this.width - s / 2), s / 2);
       y = this.height * Math.random();
       y = Math.max(Math.min(y, this.height - s / 2), s / 2);
-      player.damage.regenerate = 0.3;
+      player.damage.regenerate = 0.4;
       player.keep_in_field = true;
       player.shooting.auto_shoot = false;
       player.shooting.recharge_time = 0.05;

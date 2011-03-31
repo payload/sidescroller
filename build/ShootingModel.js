@@ -3,7 +3,7 @@
   window.ShootingModel = ShootingModel = (function() {
     function ShootingModel(world) {
       this.world = world;
-      this.recharge_time = 2;
+      this.recharge_time = 2.5;
       this.not_recharged = this.recharge_time * Math.random();
       this.auto_shoot = true;
       this.shell_vel = new b2Vec2(-400, 0);

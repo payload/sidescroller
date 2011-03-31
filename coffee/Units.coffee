@@ -10,7 +10,8 @@ window.DumbUnit = class DumbUnit extends FlyingObject
         
         @normsize = null
         @shooting = new ShootingModel(world)
-        @random_movement = false
+        @random_movement = 0
+        @random_movement_wait = 0
         @keep_right_movement = false
         @keep_right_impulse = false
         
@@ -52,10 +53,13 @@ window.DumbUnit = class DumbUnit extends FlyingObject
     
     step: (dt) ->
         if @random_movement
-            @move_up    = !@move_up    if Math.random() < 0.1
-            @move_down  = !@move_down  if Math.random() < 0.1
-            @move_left  = !@move_left  if Math.random() < 0.1
-            @move_right = !@move_right if Math.random() < 0.1
+            @random_movement_wait -= dt
+            if @random_movement_wait <= 0
+                @random_movement_wait = @random_movement
+                @move_up    = !@move_up    if Math.random() < 0.1
+                @move_down  = !@move_down  if Math.random() < 0.1
+                @move_left  = !@move_left  if Math.random() < 0.1
+                @move_right = !@move_right if Math.random() < 0.1
         w = @world.field[2]
         if @keep_right_movement and (@movement.pos.x < (w / 2))
             @keep_right_impulse = true

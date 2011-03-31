@@ -1,6 +1,6 @@
 window.ShootingModel = class ShootingModel
     constructor: (@world) ->
-        @recharge_time = 2
+        @recharge_time = 2.5
         @not_recharged = @recharge_time * Math.random()
         @auto_shoot = true
         @shell_vel = new b2Vec2(-400, 0)
