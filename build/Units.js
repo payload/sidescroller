@@ -85,7 +85,7 @@
       }
     };
     DumbUnit.prototype.step = function(dt) {
-      var pi, polar, veladd, velmax, w;
+      var pi, polar, pos, size, veladd, velmax, w;
       if (this.random_movement) {
         this.random_movement_wait -= dt;
         if (this.random_movement_wait <= 0) {
@@ -105,10 +105,17 @@
         }
       }
       w = this.world.field[2];
-      if (this.keep_right_movement && (this.movement.pos.x < (w / 2))) {
-        this.keep_right_impulse = true;
+      pos = this.movement.pos;
+      size = this.movement.size.Length();
+      if (this.keep_right_movement) {
+        if (!this.keep_in_field && pos.x < w - size) {
+          this.keep_in_field = true;
+        }
+        if (pos.x < w / 2) {
+          this.keep_right_impulse = true;
+        }
       }
-      if (this.keep_right_impulse && (this.movement.pos.x > (w * 2 / 3))) {
+      if (this.keep_right_impulse && pos.x > w * 2 / 3) {
         this.keep_right_impulse = false;
         this.move_right = false;
       }

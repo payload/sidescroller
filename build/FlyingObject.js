@@ -10,6 +10,7 @@
       this.remove_when_out_of_sight = true;
       this.removed = false;
       this.show_energy = false;
+      this.show_energy_0_fill = null;
       this.world.add_obj(this);
     }
     FlyingObject.prototype.collide = function(dt, other, coll) {
@@ -86,13 +87,20 @@
       }
     };
     FlyingObject.prototype.draw = function() {
-      var dmg, energy_ratio, style;
+      var a, b, e, i, style, _results;
       if (this.show_energy) {
         style = this.sprite.style;
-        dmg = this.damage;
-        energy_ratio = dmg.energy / dmg.max_energy;
-        style.fill = style.stroke.slice(0, 4);
-        return style.fill[3] = energy_ratio;
+        if (this.show_energy_0_fill === null) {
+          this.show_energy_0_fill = style.fill.slice(0, 4);
+        }
+        e = Math.min(Math.max(this.damage.energy / this.damage.max_energy, 0), 1);
+        a = style.stroke;
+        b = this.show_energy_0_fill;
+        _results = [];
+        for (i = 0; i <= 2; i++) {
+          _results.push(style.fill[i] = b[i] + (a[i] - b[i]) * e);
+        }
+        return _results;
       }
     };
     return FlyingObject;

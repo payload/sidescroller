@@ -10,10 +10,11 @@ window.DamageModel = class DamageModel
 
     step: (dt) ->
         return undefined if @regenerate == 0
-        if @energy < @max_energy 
+        if @energy < @max_energy or @regenerate < 0
             @energy = Math.min(
                 @energy + @regenerate * dt,
                 @max_energy)
+            @die() if @energy < 0
     
     check_group: (a, b) ->
         (return true if g in b) for g in a

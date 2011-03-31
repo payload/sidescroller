@@ -126,6 +126,8 @@ window.Game = class Game
             if obj.random_movement and Math.random() < 0.5
                 obj.keep_right_movement = true 
                 obj.damage.groups.push("obstacle")
+                obj.show_energy = true
+                obj.damage.regenerate = -0.4
     
     create_player: ->
         player = new DumbUnit(@world)

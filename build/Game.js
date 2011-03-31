@@ -226,7 +226,7 @@
         if (Math.random() < 0.5) {
           obj.random_movement = 0.01;
         }
-        _results.push(obj.random_movement && Math.random() < 0.5 ? (obj.keep_right_movement = true, obj.damage.groups.push("obstacle")) : void 0);
+        _results.push(obj.random_movement && Math.random() < 0.5 ? (obj.keep_right_movement = true, obj.damage.groups.push("obstacle"), obj.show_energy = true, obj.damage.regenerate = -0.4) : void 0);
       }
       return _results;
     };

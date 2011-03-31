@@ -7,6 +7,7 @@ window.FlyingObject = class FlyingObject
         @remove_when_out_of_sight = true
         @removed = false
         @show_energy = false
+        @show_energy_0_fill = null
         @world.add_obj(this)
     
     collide: (dt, other, coll) ->
@@ -73,8 +74,9 @@ window.FlyingObject = class FlyingObject
     draw: ->
         if @show_energy
             style = @sprite.style
-            dmg = @damage
-            energy_ratio = dmg.energy / dmg.max_energy
-            style.fill = style.stroke.slice(0, 4)
-            style.fill[3] = energy_ratio
+            @show_energy_0_fill = style.fill.slice(0, 4) if @show_energy_0_fill == null
+            e = Math.min(Math.max(@damage.energy / @damage.max_energy, 0), 1)
+            a = style.stroke
+            b = @show_energy_0_fill
+            style.fill[i] = b[i] + (a[i] - b[i]) * e for i in [0..2]
 

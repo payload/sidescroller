@@ -61,9 +61,12 @@ window.DumbUnit = class DumbUnit extends FlyingObject
                 @move_left  = !@move_left  if Math.random() < 0.1
                 @move_right = !@move_right if Math.random() < 0.1
         w = @world.field[2]
-        if @keep_right_movement and (@movement.pos.x < (w / 2))
-            @keep_right_impulse = true
-        if @keep_right_impulse and (@movement.pos.x > (w*2 / 3))
+        pos = @movement.pos
+        size = @movement.size.Length()
+        if @keep_right_movement
+            @keep_in_field = true if !@keep_in_field and pos.x < w - size
+            @keep_right_impulse = true if pos.x < w / 2
+        if @keep_right_impulse and pos.x > w*2 / 3
             @keep_right_impulse = false
             @move_right = false
         if @keep_right_impulse

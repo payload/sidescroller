@@ -20,8 +20,11 @@
       if (this.regenerate === 0) {
         return;
       }
-      if (this.energy < this.max_energy) {
-        return this.energy = Math.min(this.energy + this.regenerate * dt, this.max_energy);
+      if (this.energy < this.max_energy || this.regenerate < 0) {
+        this.energy = Math.min(this.energy + this.regenerate * dt, this.max_energy);
+        if (this.energy < 0) {
+          return this.die();
+        }
       }
     };
     DamageModel.prototype.check_group = function(a, b) {
