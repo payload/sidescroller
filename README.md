@@ -6,7 +6,7 @@
 ### using
 
 * CoffeeScript and JavaScript
-    *I learned about [CoffeeScript](http://jashkenas.github.com/coffee-script/) and I ported my code to this.
+    * I learned about [CoffeeScript](http://jashkenas.github.com/coffee-script/) and I ported my code to this.
 * HTML5 Canvas
     * hey, it has a 2D graphics API which is not a pain!
     * well, setting colors with an alpha value is weird
