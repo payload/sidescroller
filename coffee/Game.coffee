@@ -118,6 +118,7 @@ window.Game = class Game
             y = @height * Math.random()
             y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.damage.groups.push("enemy")
+            obj.damage.energy = 6
             obj.shooting.shell_group = "enemy"
             m.pos.Set(x + m.size.x, y)
             m.vel.Set(-100 + 40 * Math.random(), 0)
