@@ -119,6 +119,8 @@ window.Game = class Game
             y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.damage.groups.push("enemy")
             obj.damage.energy = 6
+            # I don't set obj.damage.max_energy here, cause I want to use the
+            # different drawing of an enemy, caused by this missing of energy
             obj.shooting.shell_group = "enemy"
             m.pos.Set(x + m.size.x, y)
             m.vel.Set(-100 + 40 * Math.random(), 0)
