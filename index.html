@@ -36,11 +36,30 @@ h1 {
     padding:0 1em;
 }
 </style>
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */
+</script>
 </head>
 <body>
 <div id="gamediv">
-    <h1>sidescroller</h1>
-
+    <h1>sidescroller
+    
+    <span style="position:absolute">
+    <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://payload.github.com"></a>
+    <noscript><a href="http://flattr.com/thing/169883/sidescroller" target="_blank">
+    <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
+    </span>
+    
+    </h1>
+    
     Move with the cursor keys, WASD or HJKL. Shoot via Shift, Space or&nbsp;left&nbsp;mouse&nbsp;button. Pause&nbsp;with&nbsp;P. Mute and unmute the buggy sound with M.
 
     <canvas id="canvas" width="640" height="480"></canvas>
