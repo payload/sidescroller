@@ -13,7 +13,7 @@
 * [GNU make](http://www.gnu.org/software/make/)
     * it sucks and does its job
     * also the Makefile is public domain
-* [GNU AGPL 3]((http://www.gnu.org/licenses/agpl.html))
+* [GNU AGPL 3](http://www.gnu.org/licenses/agpl.html)
     * this is free software
 * [VT323 font](http://www.google.com/webfonts/family?family=VT323&subset=latin)
     * by [Peter Hull](http://www.google.com/webfonts/designer?designer=Peter+Hull), licensed as [SIL OFL 1.1](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
