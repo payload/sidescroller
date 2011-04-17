@@ -1,4 +1,7 @@
-window.Obstacle = class Obstacle extends FlyingObject
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class Obstacle extends FlyingObject
     constructor: (@world) ->
         super(world)
         m = @movement

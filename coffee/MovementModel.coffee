@@ -1,4 +1,7 @@
-window.MovementModel = class MovementModel
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class MovementModel
     constructor: ->
         @pos = new b2Vec2(0, 0)
         @size = new b2Vec2(10, 10)

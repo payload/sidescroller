@@ -1,4 +1,7 @@
-window.Game = class Game
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class Game
     constructor: (@canvas, @bindings) ->
         @width = @canvas.width
         @height = @canvas.height

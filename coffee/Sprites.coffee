@@ -1,4 +1,7 @@
-window.Rectangle = class Rectangle
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class Rectangle
     constructor: (@world, @obj) ->
         m = @obj.movement
         @pos = m.pos

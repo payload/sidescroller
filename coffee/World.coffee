@@ -1,4 +1,7 @@
-window.World = class World
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class World
     constructor: (@field) ->
         @objs = []
         @shapes = []

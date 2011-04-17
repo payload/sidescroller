@@ -1,4 +1,7 @@
-window.DumbUnit = class DumbUnit extends FlyingObject
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class DumbUnit extends FlyingObject
     constructor: (@world) ->
         super(world)
         @movement.size.Set(20, 20)

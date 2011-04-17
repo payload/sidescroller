@@ -1,4 +1,7 @@
-window.ShootingModel = class ShootingModel
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class ShootingModel
     constructor: (@world) ->
         @recharge_time = 2.5
         @not_recharged = @recharge_time * Math.random()

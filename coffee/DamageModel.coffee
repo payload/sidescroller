@@ -1,4 +1,7 @@
-window.DamageModel = class DamageModel
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class DamageModel
     constructor: ->
         @energy = 0
         @max_energy = 0

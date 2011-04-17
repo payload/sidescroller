@@ -1,4 +1,7 @@
-window.Shell = class Shell extends FlyingObject
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class Shell extends FlyingObject
     constructor: (@world) ->
         super(world)
         @movement.size.Set(5, 5)

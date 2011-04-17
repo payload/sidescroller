@@ -1,4 +1,7 @@
-window.Timer = class Timer
+# Copyright © 2011 Gilbert "payload" Röhrbein
+# License: GNU AGPL 3, see also COPYING file
+
+class Timer
     constructor: (@world, @interval, @callback) ->
         @interval or= 1
         @callback or= null
