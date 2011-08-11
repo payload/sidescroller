@@ -2,7 +2,8 @@
 # License: GNU AGPL 3, see also COPYING file
 
 class Game
-    constructor: (@canvas, @bindings) ->
+    constructor: (@dom, @bindings) ->
+        @canvas = @dom.canvas
         @width = @canvas.width
         @height = @canvas.height
         @world = @create_world()
@@ -16,6 +17,8 @@ class Game
         @texts = @create_texts()
         @actions = @create_actions()
         @set_bindings()
+        @myscore = 0
+        @mynick = "Anony Mous"
 
     create_keys: ->
         up: [87, 75, 38]
@@ -52,7 +55,7 @@ class Game
             (dt) => @player.move_down_off(dt),
             null]
         right: [
-            (dt) => @player.move_right_on(dt), 
+            (dt) => @player.move_right_on(dt),
             (dt) => @player.move_right_off(dt),
             null]
         shoot: [
@@ -80,10 +83,13 @@ class Game
     set_bindings: ->
         @enable_binding(@keys[x], @actions[x]) for own x of @actions
 
-    disable_player_bindings: ->
+    disable_player_bindings: () =>
+        @disable_bindings( (x) => x not in ['pause', 'mute'] )
+
+    disable_bindings: (filter) =>
         for own y of @actions
-            if y not in ['pause', 'mute'] 
-                @bindings.disable(x) for x in @keys[y] 
+            if not filter or filter(y)
+                @bindings.disable(x) for x in @keys[y]
 
     enable_binding: (keys, action) ->
         @bindings.enable.apply(@bindings, [k].concat(action)) for k in keys
@@ -103,7 +109,7 @@ class Game
             y = Math.max(Math.min(y, @height - s / 2), s / 2)
             obj.movement.pos.Set(x, y)
             obj.damage.groups.push("obstacle")
-    
+
     create_spawner: ->
         new Timer(@world, 0.4, =>
             if (Math.random() < 0.2)
@@ -111,7 +117,7 @@ class Game
             if (Math.random() < 0.3)
                 @create_some_obstacles(1 + 3 * Math.random())
         )
-    
+
     create_some_enemies: (count) ->
         for i in [0...count]
             obj = new DumbUnit(@world)
@@ -130,11 +136,11 @@ class Game
             m.vel_want.SetV(m.vel)
             obj.random_movement = 0.01 if Math.random() < 0.5
             if obj.random_movement and Math.random() < 0.5
-                obj.keep_right_movement = true 
+                obj.keep_right_movement = true
                 obj.damage.groups.push("obstacle")
                 obj.show_energy = true
                 obj.damage.regenerate = -0.4
-    
+
     create_player: ->
         player = new DumbUnit(@world)
         s = player.movement.size.Length()
@@ -155,31 +161,79 @@ class Game
         player.damage.die = (other) =>
             die(other)
             @game_over = true
+            screen = @dom.gameover
+            $(screen).css("visibility", "visible")
+            @show_highscore()
+            @disable_bindings()
         player
+
+    fetch_highscore: (score) =>
+        # TODO fetch highscore from server
+        [{
+            rank: 0
+            nick: undefined
+            score: score
+            },{
+            rank: 1
+            nick: "foo"
+            score: "some"
+        }]
+
+    push_highscore_entry: (nick, score) =>
+        # TODO push highscore entry to server
+        alert(nick, score)
+
+    close: () =>
+        if @game_over
+            @push_highscore_entry(@mynick, @myscore)
+
+    show_highscore: () =>
+        @myscore = Math.round(@world.score)
+        highscore = @fetch_highscore(@myscore)
+        { hstable, hsline } = @dom
+        $(hstable).empty()
+        for { rank, nick, score } in highscore
+            line = hsline.clone(true)
+            tds = line.children()
+            hsrank = tds.filter(".highscore_rank")
+            hsnick = tds.filter(".highscore_nick")
+            hsscore = tds.filter(".highscore_score")
+            hsrank.append("#{rank}.")
+            hsnick_input = hsnick.children().filter("input")
+            if nick is undefined
+                hsnick_input.prop { value: "Anony Mous"}
+                mynick = hsnick_input
+            else
+                hsnick_input.prop { value: nick } # TODO readonly
+            hsscore.append("#{score}")
+            $(hstable).append(line)
+            mynick.focus()
+            mynick.change () =>
+                @mynick = mynick.html()
 
     create_world: ->
         field = [0, 0, @width, @height]
         world = new World(field)
         world
-    
+
     collision_handler: (dt, coll) ->
         coll.a.obj?.collide?(dt, coll.b, coll)
         coll.b.obj?.collide?(dt, coll.a, coll)
-    
+
     step: (dt) ->
         return undefined if @pause
         chandler = @collision_handler
         collisions = @world.get_collisions()
         chandler(dt, collision) for collision in collisions
         @world.step(dt)
-    
+
     draw: (ctx) ->
         create_style: ->
         normal_font = (ctx) ->
             ctx.font = "1em VT323"
         big_font = (ctx) ->
             ctx.font = "5em VT323"
-        
+
         ctx.save()
         ctx.lineWidth = 2
         ctx.strokeStyle = "gray"
@@ -199,25 +253,5 @@ class Game
             normal_font(ctx)
             ctx.fillText(tf, 6, 40)
             ctx.restore()
-        # game over screen
-        if @game_over
-            ctx.save()
-            cw = @width/2
-            ch = @height/2
-            ctx.translate(cw, ch)
-            ctx.textAlign = "center"
-            
-            ctx.save()
-            normal_font(ctx)
-            ctx.fillText(@texts.reload, 0, 22)
-            ctx.restore()
-            
-            ctx.save()
-            big_font(ctx)
-            ctx.fillText(@texts.game_over, 0, 0)
-            ctx.restore()
-            
-            ctx.restore()
         ctx.restore()
-
 

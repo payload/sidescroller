@@ -15,7 +15,7 @@ License: GNU AGPL 3, see also COPYING file
 body {
     width:100%;
     margin:0;
-    font-family:VT323;
+    font-family: 'VT323';
 }
 canvas {
     margin:auto;
@@ -39,23 +39,69 @@ h1 {
     max-width:1024px;
     padding:0 1em;
 }
+input {
+    border: none;
+    background: none;
+    font: 1em 'VT323';
+}
+#gameover_screen {
+    position: absolute;
+    margin: 1px;
+    width: 640px;
+    height: 480px;
+    padding-top: 60px;
+    visibility: hidden;
+}
+#gameover {
+    font-size: 5em;
+    display:block;
+}
+#gameover_reload {
+    display:block;
+}
+#gameover_nickname {
+    text-align: inherit;
+}
+#highscore_table {
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed;
+    text-align: left;
+}
+#highscore_table tr {
+}
+#highscore_table td {
+}
 </style>
 </head>
 <body>
 <div id="gamediv">
     <h1>sidescroller
-    
+
     <span style="position:absolute">
     <a href="http://flattr.com/thing/169883/sidescroller" target="_blank">
     <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
     </span>
-    
+
     </h1>
-    
+
     Move with the cursor keys, WASD or HJKL. Shoot via Shift, Space or&nbsp;left&nbsp;mouse&nbsp;button. Pause&nbsp;with&nbsp;P. Mute and unmute the buggy sound with M.
 
-    <canvas id="canvas" width="640" height="480"></canvas>
-</div> 
+    <div>
+        <div id="gameover_screen">
+            <span id="gameover"">Game Over</span>
+            <span id="gameover_reload">Reload with F5 or Ctrl+R to play it again!"</span>
+            <table id="highscore_table">
+                <tr>
+                    <td class="highscore_rank"></td>
+                    <td class="highscore_nick"><input id="gameover_nickname" value=""/></td>
+                    <td class="highscore_score"></td>
+                </tr>
+            </table>
+        </div>
+        <canvas id="canvas" width="640" height="480"></canvas>
+    </div>
+</div>
 <div id="footerdiv">
     Watch also my
         <a href="https://github.com/payload/sidescroller/">github&nbsp;account</a>
